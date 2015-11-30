@@ -23,7 +23,7 @@ TARGET_OTA_ASSERT_DEVICE := vivaltods5m,G313HU,SM-G313HU,hawaii
 BOARD_KERNEL_BASE := 0x81e00000
 BOARD_KERNEL_PAGESIZE := 4096
 TARGET_KERNEL_CONFIG := bcm21664_hawaii_ss_vivaltods5m_rev00_cm_defconfig
-TARGET_KERNEL_SOURCE := ../kernel/samsung/hawaii
+TARGET_KERNEL_SOURCE := kernel/samsung/hawaii
 
 # PARTITION SIZE
 BOARD_BOOTIMAGE_PARTITION_SIZE := 8388608
@@ -87,7 +87,7 @@ BOARD_USES_ALSA_AUDIO := true
 # of an SDK AVD. Note that this operation only works on Linux for now
 ifeq ($(HOST_OS),linux)
   ifeq ($(WITH_DEXPREOPT),)
-    WITH_DEXPREOPT := true
+    WITH_DEXPREOPT := false
   endif
 endif
 
@@ -113,7 +113,7 @@ BOARD_HAS_LOW_RESOLUTION := true
 
 # Recovery
 TARGET_RECOVERY_INITRC := device/samsung/vivaltods5m/ramdisk/init.recovery.rc
-TARGET_RECOVERY_FSTAB := device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vvivaltods5m
+TARGET_RECOVERY_FSTAB := device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_LARGE_FILESYSTEM := true
