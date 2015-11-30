@@ -17,6 +17,7 @@ on init
     export ANDROID_ROOT /system
     export ANDROID_DATA /data
     export EXTERNAL_STORAGE /sdcard
+    export SECONDARY_STORAGE /external_sd
 
     symlink /system/etc /etc
 
@@ -26,10 +27,10 @@ on init
     mkdir /internal_sd
     mkdir /external_sd
     mkdir /sd-ext
-    mkdir /datadata
     mkdir /emmc
     mkdir /system
     mkdir /data
+    mkdir /efs
     mkdir /cache
     mount tmpfs tmpfs /tmp
 

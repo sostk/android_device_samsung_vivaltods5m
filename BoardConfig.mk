@@ -112,23 +112,26 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd-vivaltods5m.hawaii
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/vivaltods5m/ril/
 
-# Philz config
+# Philz edits
 RECOVERY_VARIANT := philz
-BOARD_HAS_LOW_RESOLUTION := true
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+DEVICE_RESOLUTION := 480x800
+BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_10x18.h\"
 
 # Recovery
 TARGET_RECOVERY_INITRC := device/samsung/vivaltods5m/ramdisk/init.recovery.rc
 TARGET_RECOVERY_FSTAB := device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
-BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_HAS_NO_MISC_PARTITION := true
+BOARD_HAS_NO_SELECT_BUTTON := true
+BOARD_RECOVERY_ALWAYS_WIPES := false
+BOARD_RECOVERY_HANDLES_MOUNT := true
+BOARD_SUPPRESS_EMMC_WIPE := true
+BOARD_USES_MMCUTILS := false
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
-BOARD_HAS_NO_MISC_PARTITION := true
-BOARD_RECOVERY_HANDLES_MOUNT := true
-BOARD_USES_MMCUTILS := false
-BOARD_RECOVERY_ALWAYS_WIPES := false
-BOARD_SUPPRESS_EMMC_WIPE := true
+
 
 # CMHW
 BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/vivaltods5m/cmhw/
