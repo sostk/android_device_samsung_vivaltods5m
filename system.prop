@@ -1,5 +1,5 @@
 #
-# vivaltonfc3g (SM-G313HN)
+# vivaltods5m (SM-G313HU)
 #
 rild.libpath=/system/lib/libbrcm_ril.so
 #rild.libargs=-d /dev/ttyS0

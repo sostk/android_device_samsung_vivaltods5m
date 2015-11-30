@@ -216,7 +216,7 @@ on fs
 # Support Preload install apks
     mkdir /preload 0771 system system
 
-    mount_all /fstab.hawaii_ss_vivaltonfc3g
+    mount_all /fstab.hawaii_ss_vivaltods5m
 # Temporary hack for root access
     chmod 6755 /system/xbin/su
 
@@ -306,38 +306,6 @@ on fs
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chmod 0777 /system/bin/btld
-
-###############################################################################
-# System LSI
-# Comment : add permission to device driver
-
-# Disable pn547
-#nfc
-#    chown nfc nfc /dev/pn547
-
-# NFC : Permissions for NFC
-#    chmod 0660 /dev/sec-nfc
-# NFC : change owner
-#    chown nfc nfc /dev/sec-nfc
-# NFC : create data/nfc for nv storage
-#    mkdir /data/nfc 0700 nfc nfc
-#    mkdir /data/nfc/param 0700 nfc nfc
-
-# Set up nfc test option
-#  setprop snfc.test.fwdownload 2
-#  setprop snfc.test.power      sec
-#  setprop snfc.test.tag        sec
-###############################################################################
-# NFC_BROADCOM
-    setprop ro.nfc.port "I2C"
-    chmod 0600 /dev/bcm2079x
-    chown nfc nfc /dev/bcm2079x
-    mkdir /data/bcmnfc
-    mkdir /data/bcmnfc/param
-    chmod 0755 /data/bcmnfc
-    chmod 0755 /data/bcmnfc/param
-    chown nfc nfc /data/bcmnfc
-    chown nfc nfc /data/bcmnfc/param
 
 #for ASE application
     mkdir /data/brcm

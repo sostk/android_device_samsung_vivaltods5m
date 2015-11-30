@@ -30,7 +30,6 @@ lib/hw/camera.hawaii.so
 lib/hw/gps.hawaii.so
 lib/hw/gralloc.hawaii.so
 lib/hw/hwcomposer.hawaii.so
-lib/hw/nfc_nci.hawaii.so
 lib/hw/sensors.hawaii.so
 lib/soundfx/libaudiopreprocessing.so
 lib/soundfx/libbundlewrapper.so
@@ -153,7 +152,7 @@ media/battery_error.qmg
 media/chargingwarning.qmg
 usr/share/alsa/alsa.conf
 vendor/firmware/bcm2079xA1_firmware.ncd
-vendor/firmware/BCM4343A0_001.001.034.0044.0127_ORC_Vivalto-3G_5MC.hcd
+vendor/BCM4343A0_001.001.034.0047.0137_ORC_Vivalto-3G_5MC.hcd
 vendor/firmware/sec_s3fnrn3_firmware.bin
 vendor/lib/libwvdrm_L3.so
 vendor/lib/libWVStreamControlAPI_L3.so
