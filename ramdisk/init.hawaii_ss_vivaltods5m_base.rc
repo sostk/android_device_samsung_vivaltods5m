@@ -209,7 +209,7 @@ on boot
 # END BCM QUICK BOOT FEATURE
 
 # SEC_PRODUCT_FEATURE_COMMON_USE_MULTISIM
-    setprop ro.multisim.simslotcount 2
+    setprop ro.multisim.simslotcount 1
 
 on fs
 # Support Preload install apks
@@ -396,8 +396,8 @@ on post-fs-data
 # ]
 
 # Changing secheduler to cfq after boot complete
-#    on property:service.bootanim.exit=1
-#    write /sys/block/mmcblk0/queue/scheduler cfq
+    on property:service.bootanim.exit=1
+    write /sys/block/mmcblk0/queue/scheduler cfq
 
 service lpm /system/bin/lpm
     class charger
@@ -447,12 +447,6 @@ service usb_portd /system/bin/usb_portd
     user system
     group input vpn net_admin net_raw radio system sdcard_rw
 
-# Run atxd daemon, which needs group permissions to run in non-root mode.
-#service atxd /system/bin/atxd
-#    class main
-#    user shell
-#    group input vpn net_admin net_raw radio system sdcard_rw log
-
 # Run usbdev_mode to set USB configuration from uboot if bootargs usbdev_mode option is set.
 service usbdev_mode /system/bin/usbdev_mode
     class main
@@ -478,24 +472,6 @@ service set_simid /system/bin/atx --fordev=ACM --runcmd=/data/atx/setsim.txt
 on property:persist.sys.dataprefer.simid=0
     write /data/atx/setsim.txt at*msetsim=1
     start set_simid
-
-#for DUN policy routing
-service config_dun_up /system/bin/sh /system/etc/configure_dun.sh up
-     disabled
-     oneshot
-
-service config_dun_down /system/bin/sh /system/etc/configure_dun.sh do
-     disabled
-     oneshot
-
-#DUN on
-on property:brcm.dun.state=1
-     write /data/brcm/utils/aa.txt  brcm.dun.state=1
-     start config_dun_up
-
-#DUN off
-on property:brcm.dun.state=0
-     start config_dun_down
 
 # When the default SIM for data connections is updated,
 # also update the DUN AT channel with the default SIM.
@@ -589,12 +565,6 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
-
-# ROOT (was used on stock)
-#service daemonsu /system/xbin/su --daemon
-#    class main
-#    user root
-#    oneshot
 
 on property:ro.dumpstate.dmesg=1
     write /proc/sys/kernel/dmesg_restrict 0
