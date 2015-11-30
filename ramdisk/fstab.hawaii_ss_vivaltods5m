@@ -13,6 +13,8 @@
 /dev/block/platform/sdhci.1/by-name/HIDDEN	/preload	ext4	defaults									recoveryonly
 
 # vold-managed volumes ("block device" is actually a sysfs devpath)
-/devices/platform/sdhci.0/mmc_host/mmc2         auto            vfat    default                                                                         voldmanaged=extSdCard:auto,noemulatedsd
+/devices/platform/sdhci.0/mmc_host/mmc2         auto            auto    default                                                                         voldmanaged=extSdCard:auto,noemulatedsd
 #/devices/platform/dwc_otg/usb1			auto		auto	defaults									voldmanaged=usbdisk:auto
 
+# zRam
+/dev/block/zram0	none	swap  defaults	wait,zramsize=131072000

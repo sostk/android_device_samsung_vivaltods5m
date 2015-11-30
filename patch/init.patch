@@ -1,0 +1,36 @@
+diff -aur system_core/init/init.c system/core/init/init.c
+--- system_core/init/init.c	2015-11-30 10:47:40.543219697 +0300
++++ system/core/init/init.c	2015-11-30 00:17:38.309317965 +0300
+@@ -81,7 +81,7 @@
+ 
+ static char console[32];
+ static char bootmode[32];
+-static char hardware[32];
++static char hardware[48];
+ static unsigned revision = 0;
+ static char qemu[32];
+ static char battchg_pause[32];
+diff -aur system_core/init/ueventd.c system/core/init/ueventd.c
+--- system_core/init/ueventd.c	2015-11-30 10:47:40.543219697 +0300
++++ system/core/init/ueventd.c	2015-11-29 23:41:49.908780025 +0300
+@@ -30,9 +30,9 @@
+ #include "devices.h"
+ #include "ueventd_parser.h"
+ 
+-static char hardware[32];
++static char hardware[48];
+ static unsigned revision = 0;
+-char bootdevice[32];
++char bootdevice[48];
+ 
+ static void import_kernel_nv(char *name, int in_qemu)
+ {
+@@ -56,7 +56,7 @@
+ {
+     struct pollfd ufd;
+     int nr;
+-    char tmp[32];
++    char tmp[48];
+ 
+     /*
+      * init sets the umask to 077 for forked processes. We need to

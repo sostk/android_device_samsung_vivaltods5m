@@ -107,8 +107,12 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd-vivaltods5m.hawaii
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/vivaltods5m/ril/
 
+# Philz config
+RECOVERY_VARIANT := philz
+BOARD_HAS_LOW_RESOLUTION := true
+
 # Recovery
-#TARGET_RECOVERY_INITRC := 
+TARGET_RECOVERY_INITRC := device/samsung/vivaltods5m/ramdisk/init.recovery.rc
 TARGET_RECOVERY_FSTAB := device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vvivaltods5m
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
 BOARD_HAS_NO_SELECT_BUTTON := true

@@ -22,7 +22,7 @@ PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
 	device/samsung/vivaltods5m/ramdisk/init.wifi.rc:root/init.wifi.rc \
 	device/samsung/vivaltods5m/ramdisk/lpm.rc:root/lpm.rc \
-	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m # .rc was cut off, because ueventd only checks for < 32 char long filenames..
+	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
 
 # Audio config
 PRODUCT_COPY_FILES += \
@@ -137,7 +137,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=rmnet0 \
     ro.telephony.ril_class=SamsungBCMRIL \
     ro.zygote.disable_gl_preload=true \
-    persist.radio.multisim.config=none \
+    persist.radio.multisim.config=dsds \
     ro.cm.hardware.cabc=/sys/class/mdnie/mdnie/cabc \
     ro.telephony.call_ring.multiple=0 \
     ro.telephony.call_ring=0
