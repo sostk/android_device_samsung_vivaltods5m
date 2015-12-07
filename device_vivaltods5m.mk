@@ -132,7 +132,7 @@ PRODUCT_PACKAGES += \
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
-    cm.updater.uri=http://stableservers.eu/~jokurandom/CyanogenModOTA/api \
+    cm.updater.uri=http://akane.02ch.in/CyanogenModOTA/api \
     wifi.interface=wlan0 \
     mobiledata.interfaces=rmnet0 \
     ro.telephony.ril_class=SamsungBCMRIL \

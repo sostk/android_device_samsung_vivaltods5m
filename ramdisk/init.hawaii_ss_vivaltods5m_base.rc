@@ -307,6 +307,11 @@ on fs
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chmod 0777 /system/bin/btld
 
+# media codecs
+    symlink /system/etc/audio_policy.conf /etc/audio_policy.conf
+    symlink /system/etc/media_profiles.xml /etc/media_profiles.xml
+    symlink /system/etc/media_codecs.xml /etc/media_codecs.xml
+
 #for ASE application
     mkdir /data/brcm
     mkdir /data/brcm/ase
@@ -567,4 +572,4 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
     oneshot
 
 on property:ro.dumpstate.dmesg=1
-    write /proc/sys/kernel/dmesg_restrict 0
+    write /proc/sys/kernel/dmesg_restrict 1
