@@ -30,7 +30,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
- 	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml 
+	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml 
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
@@ -48,7 +48,7 @@ PRODUCT_COPY_FILES += \
 # WiFi config
 PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
-	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+#	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
 # Charger
@@ -63,8 +63,8 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 # Filesystem management tools
 PRODUCT_PACKAGES += \
 	make_ext4fs \
-    e2fsck \
-    setup_fs
+	e2fsck \
+	setup_fs
 	
 # Open-source lights HAL
 PRODUCT_PACKAGES += \
@@ -76,6 +76,7 @@ PRODUCT_PACKAGES += \
 	audio.primary.default \
 	audio.r_submix.default \
 	audio.usb.default \
+	sound_trigger.stub.default \
 	libnetcmdiface \
 	libstagefrighthw \
 	lights.hawaii 
@@ -92,7 +93,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
 	dhcpcd.conf \
 	hostapd \
-	wpa_supplicant
+	wpa_supplicant \
+	wpa_supplicant.conf
 
 # Samsung Doze
 PRODUCT_PACKAGES += \
@@ -134,7 +136,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # MTP
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp
+	persist.sys.usb.config=mtp
 
 # Dalvik heap config
 include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk

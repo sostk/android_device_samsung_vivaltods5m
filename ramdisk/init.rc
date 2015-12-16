@@ -431,6 +431,8 @@ on charger
     mount ext4 /dev/block/mmcblk0p17 /system ro wait noatime
     exec sfsck /dev/block/mmcblk0p19 ext4
     mount ext4 /dev/block/mmcblk0p19 /data wait nosuid nodev noatime discard,noauto_da_alloc,journal_async_commit
+    write /sys/module/pwr_mgr/parameters/pm_late_init 1
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
     class_start charger
 
 on property:vold.decrypt=trigger_default_encryption
@@ -515,6 +517,11 @@ service auditd /system/bin/auditd -k
 
 on property:ro.debuggable=1
     start console
+
+# Charger
+service lpm /system/bin/lpm
+    class charger
+    critical
 
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd --root_seclabel=u:r:su:s0
