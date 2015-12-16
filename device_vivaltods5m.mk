@@ -123,9 +123,9 @@ PRODUCT_COPY_FILES += \
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
+# mobiledata.interfaces=rmnet0 \
 PRODUCT_PROPERTY_OVERRIDES += \
 	wifi.interface=wlan0 \
-	mobiledata.interfaces=rmnet0 \
 	ro.telephony.ril_class=SamsungBCMRIL \
 	persist.radio.multisim.config=dsds \
 	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA \

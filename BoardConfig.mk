@@ -16,9 +16,10 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 TARGET_BOOTLOADER_BOARD_NAME := hawaii
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
+BOARD_VENDOR := samsung
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := vivaltods5m,G313HU,GT-G313HU,hawaii
+TARGET_OTA_ASSERT_DEVICE := vivaltods5m,G313HU,SM-G313HU,hawaii
 
 # Kernel
 BOARD_KERNEL_BASE := 0x81e00000
@@ -56,6 +57,7 @@ WIFI_DRIVER_NVRAM_PATH_PARAM     := "/sys/module/dhd/parameters/nvram_path"
 WIFI_DRIVER_NVRAM_PATH           := "/system/etc/wifi/nvram_net.txt"
 WIFI_BAND                        := 802_11_ABG
 BOARD_HAVE_SAMSUNG_WIFI          := true
+BOARD_NO_WIFI_HAL                := true
 
 # Resolution
 TARGET_SCREEN_HEIGHT := 800
@@ -84,24 +86,12 @@ BOARD_USE_BGRA_8888 := true
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 
-# Enable dex-preoptimization to speed up the first boot sequence
-# of an SDK AVD. Note that this operation only works on Linux for now
-ifeq ($(HOST_OS),linux)
-  ifeq ($(WITH_DEXPREOPT),)
-    #WITH_DEXPREOPT := true
-  endif
-endif
-
 # Bootanimation
 TARGET_BOOTANIMATION_PRELOAD := true
 TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 
 # Charger
-#BOARD_BATTERY_DEVICE_NAME := battery
-#BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
-CHARGING_ENABLED_PATH := "/sys/class/power_supply/battery/batt_lp_charging"
-#BACKLIGHT_PATH := "/sys/class/backlight/panel/brightness"
 
 # healthd
 BOARD_HAL_STATIC_LIBRARIES := libhealthd-vivaltods5m.hawaii
@@ -112,10 +102,11 @@ CM_POWERHAL_EXTENSION := hawaii
 TARGET_POWERHAL_VARIANT := cm
 
 # RIL
+#BOARD_PROVIDES_LIBRIL := true
 BOARD_RIL_CLASS := ../../../device/samsung/vivaltods5m/ril/
 
 # Recovery
-#TARGET_RECOVERY_INITRC := 
+TARGET_RECOVERY_INITRC := device/samsung/vivaltods5m/ramdisk/init.recovery.rc
 TARGET_RECOVERY_FSTAB := device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
 BOARD_HAS_NO_SELECT_BUTTON := true
@@ -147,12 +138,10 @@ BOARD_SEPOLICY_DIRS += \
 BOARD_SEPOLICY_UNION += \
     file_contexts \
     property_contexts \
-    service_contexts \
     bkmgrd.te \
     device.te \
 	surfaceflinger.te \
 	bluetooth.te \
-    geomagneticd.te \
     gpsd.te \
     init.te \
     immvibed.te \
@@ -161,6 +150,4 @@ BOARD_SEPOLICY_UNION += \
     macloader.te \
     rild.te \
     shell.te \
-    system_server.te \
-    tvserver.te \
-    vclmk.te
+    system_server.te

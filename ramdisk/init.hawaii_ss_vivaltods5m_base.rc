@@ -7,7 +7,6 @@ on early-init
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 on init
-    stop ril-daemon
 
     mkdir /cache 0000 system system
     loglevel 7
@@ -212,6 +211,9 @@ on boot
 # SEC_PRODUCT_FEATURE_COMMON_USE_MULTISIM
     setprop ro.multisim.simslotcount 1
 
+# Prevents permission denied error for telephony
+    chmod 0644 /proc/cmdline
+
 on fs
 # Support Preload install apks
     mkdir /preload 0771 system system
@@ -408,7 +410,7 @@ on property:ro.debuggable=1
     start console
 
 # ril
-service hawaii-rild /system/bin/rild
+service ril-daemon /system/bin/rild
     class main
     socket rild stream 660 root radio
     socket rild1 stream 660 root radio
