@@ -123,14 +123,13 @@ PRODUCT_COPY_FILES += \
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
-# mobiledata.interfaces=rmnet0 \
 PRODUCT_PROPERTY_OVERRIDES += \
 	wifi.interface=wlan0 \
 	ro.telephony.ril_class=SamsungBCMRIL \
 	persist.radio.multisim.config=dsds \
 	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA \
-	ro.telephony.call_ring.multiple=0 \
 	camera2.portability.force_api=1 \
+	ro.telephony.call_ring.multiple=0 \
 	ro.telephony.call_ring=0
 
 # MTP
@@ -142,7 +141,6 @@ include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
 
 $(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 ifeq ($(TARGET_BUILD_VARIANT),user)      
 else      

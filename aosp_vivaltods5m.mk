@@ -2,7 +2,7 @@
 PRODUCT_RELEASE_NAME := SM-G313HU
 
 # Inherit some common stuff.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/samsung/vivaltods5m/device_vivaltods5m.mk)
