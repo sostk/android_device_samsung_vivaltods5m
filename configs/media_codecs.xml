@@ -115,7 +115,14 @@ Only the three quirks included above are recognized at this point:
     
     <!-- Hardware codecs -->
     <Encoders>
+        <MediaCodec name="OMX.brcm.video.h264.async.hw.encoder" type="video/avc" />
         <MediaCodec name="OMX.brcm.video.h264.hw.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.video.h264.async.hw.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.video.mpeg4.encoder" type="video/mp4v-es" />
+        <MediaCodec name="OMX.brcm.video.h263.encoder" type="video/3gpp" />
+        <MediaCodec name="OMX.brcm.video.h264.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.audio.amrnb.encoder" type="audio/3gpp" />
+        <MediaCodec name="OMX.brcm.audio.amrwb.encoder" type="audio/amr-wb" />
         <MediaCodec name="OMX.brcm.audio.aac.encoder" type="audio/mp4a-latm" />
     </Encoders>
 
