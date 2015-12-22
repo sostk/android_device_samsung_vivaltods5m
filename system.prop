@@ -1,5 +1,5 @@
 #
-# VIVALTODS5M (SM-G313HU)
+# vivaltods5m (SM-G313HU)
 #
 
 persist.brcm.log=none
@@ -7,7 +7,6 @@ persist.brcm.cp_crash=none
 persist.brcm.ap_crash=none
 
 rild.libpath=/system/lib/libbrcm_ril.so
-#rild.libargs=-d /dev/ttyS0
 ro.telephony.ril.v3=icccardstatus,datacall,signalstrength,facilitylock
 ro.sf.lcd_density=240
 ro.lcd_brightness=160
@@ -34,3 +33,6 @@ video.enc.h264.timing_thr2=145
 ro.ril.hsxpa=1
 ro.ril.gprsclass=10
 ro.com.google.gmsversion=4.1_r4
+
+#ksm
+ro.ksm.default=1

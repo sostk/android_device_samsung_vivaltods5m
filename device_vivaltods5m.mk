@@ -1,9 +1,15 @@
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
-$(call inherit-product-if-exists, vendor/samsung/vivaltods5m/vivaltods5m-vendor.mk)
+# Copy kernel
+ifeq ($(TARGET_PREBUILT_KERNEL),)
+LOCAL_KERNEL := device/samsung/vivaltods5m/kernel
+else
+LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
+endif
+
+PRODUCT_COPY_FILES += \
+	$(LOCAL_KERNEL):kernel
 
 # Use high-density artwork where available
 PRODUCT_LOCALES += hdpi
@@ -23,14 +29,17 @@ PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/ramdisk/init.wifi.rc:root/init.wifi.rc \
 	device/samsung/vivaltods5m/ramdisk/lpm.rc:root/lpm.rc \
 	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
-	
+
+# Codec config
 PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/configs/media_profiles.xml:system/etc/media_profiles.xml \
 	device/samsung/vivaltods5m/configs/audio_policy.conf:system/etc/audio_policy.conf \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
-	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml 
+	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
+	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml \
+	#external/stagefright-plugins/data/media_codecs_ffmpeg.xml:system/etc/media_codecs_ffmpeg.xml
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
@@ -48,17 +57,10 @@ PRODUCT_COPY_FILES += \
 # WiFi config
 PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
-#	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
-# Charger
-PRODUCT_PACKAGES += \
-	charger_res_images
-
-# Insecure ADBD
-ADDITIONAL_DEFAULT_PROPERTIES += \
-	ro.adb.secure=0 \
-	persist.service.adb.enable=0
+# APN config
+PRODUCT_COPY_FILES += device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -69,6 +71,10 @@ PRODUCT_PACKAGES += \
 # Open-source lights HAL
 PRODUCT_PACKAGES += \
 	lights.hawaii
+
+# Charger
+PRODUCT_PACKAGES += \
+	charger_res_images
 		
 # Misc other modules
 PRODUCT_PACKAGES += \
@@ -76,7 +82,6 @@ PRODUCT_PACKAGES += \
 	audio.primary.default \
 	audio.r_submix.default \
 	audio.usb.default \
-	sound_trigger.stub.default \
 	libnetcmdiface \
 	libstagefrighthw \
 	lights.hawaii 
@@ -84,10 +89,6 @@ PRODUCT_PACKAGES += \
 # Device-specific packages
 PRODUCT_PACKAGES += \
 	SamsungServiceMode
-
-# KSM
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.ksm.default=1	
 	
 # Wi-Fi
 PRODUCT_PACKAGES += \
@@ -99,6 +100,28 @@ PRODUCT_PACKAGES += \
 # Samsung Doze
 PRODUCT_PACKAGES += \
 	SamsungDoze
+
+# Some common packages
+PRODUCT_PACKAGES += \
+	Mms \
+	Stk \
+	CellBroadcastReceiver
+
+# Live Wallpapers
+PRODUCT_PACKAGES += \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    VisualizationWallpapers
+
+# Stagefright FFMPEG plugin
+PRODUCT_PACKAGES += \
+    libffmpeg_extractor \
+    libffmpeg_omx \
+    media_codecs_ffmpeg.xml
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    media.sf.omx-plugin=libffmpeg_omx.so \
+    media.sf.extractor-plugin=libffmpeg_extractor.so
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -122,11 +145,17 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
 
+# Insecure ADBD
+ADDITIONAL_DEFAULT_PROPERTIES += \
+	ro.adb.secure=0 \
+	persist.service.adb.enable=0
+
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
 	wifi.interface=wlan0 \
+	mobiledata.interfaces=rmnet0 \
 	ro.telephony.ril_class=SamsungBCMRIL \
 	persist.radio.multisim.config=dsds \
 	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA \

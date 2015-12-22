@@ -113,7 +113,6 @@ lib/libuecodec.so
 lib/libuip.so
 lib/libusb_config.so
 lib/libVCOS.so
-lib/libwvm.so
 media/battery_batteryerror.qmg
 media/battery_charging_5.qmg
 media/battery_charging_10.qmg

@@ -1,3 +1,15 @@
+diff --git a/healthd/healthd_mode_charger.cpp b/healthd/healthd_mode_charger.cpp
+index 5039649..4472327 100644
+--- a/healthd/healthd_mode_charger.cpp
++++ b/healthd/healthd_mode_charger.cpp
+@@ -547,6 +547,7 @@ static void process_key(struct charger *charger, int code, int64_t now)
+ static void handle_input_state(struct charger *charger, int64_t now)
+ {
+     process_key(charger, KEY_POWER, now);
++    process_key(charger, KEY_HOME, now);
+ 
+     if (charger->next_key_check != -1 && now > charger->next_key_check)
+         charger->next_key_check = -1;
 diff --git a/init/Android.mk b/init/Android.mk
 index 228e645..dab02ce 100644
 --- a/init/Android.mk
@@ -20,7 +32,7 @@ index 228e645..dab02ce 100644
  LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
  LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_UNSTRIPPED)
 diff --git a/init/init.c b/init/init.c
-index bd1db7a..bb15317 100644
+index bd1db7a..d8e1c98 100644
 --- a/init/init.c
 +++ b/init/init.c
 @@ -958,6 +958,25 @@ static int audit_callback(void *data, security_class_t cls __attribute__((unused
@@ -49,18 +61,23 @@ index bd1db7a..bb15317 100644
  int log_callback(int type, const char *fmt, ...)
  {
      int level;
-@@ -1074,7 +1093,10 @@ int main(int argc, char **argv)
+@@ -1068,7 +1087,7 @@ int main(int argc, char **argv)
+     restorecon("/dev/__properties__");
+     restorecon_recursive("/sys");
+ 
+-    is_charger = !strcmp(bootmode, "charger");
++    is_charger = !strcmp(bootmode, "charger") || charging_mode_booting();
+ 
+     INFO("property init\n");
      property_load_boot_defaults();
+@@ -1093,7 +1112,6 @@ int main(int argc, char **argv)
+     queue_builtin_action(property_service_init_action, "property_service_init");
+     queue_builtin_action(signal_init_action, "signal_init");
  
-     INFO("reading config file\n");
--    init_parse_config_file("/init.rc");
-+    if (!charging_mode_booting())
-+       init_parse_config_file("/init.rc");
-+    else
-+       init_parse_config_file("/lpm.rc");
- 
-     action_for_each_trigger("early-init", action_add_queue_tail);
- 
+-    /* Don't mount filesystems or start core system services if in charger mode. */
+     if (is_charger) {
+         action_for_each_trigger("charger", action_add_queue_tail);
+     } else {
 diff --git a/init/ueventd.c b/init/ueventd.c
 index 833e4fd..34cdf1c 100644
 --- a/init/ueventd.c

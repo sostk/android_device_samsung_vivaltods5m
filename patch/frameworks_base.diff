@@ -1,0 +1,325 @@
+diff --git a/api/current.txt b/api/current.txt
+index 35423fd..9938114 100644
+--- a/api/current.txt
++++ b/api/current.txt
+@@ -17,6 +17,7 @@ package android {
+     field public static final java.lang.String ACCOUNT_MANAGER = "android.permission.ACCOUNT_MANAGER";
+     field public static final java.lang.String ADD_VOICEMAIL = "com.android.voicemail.permission.ADD_VOICEMAIL";
+     field public static final java.lang.String AUTHENTICATE_ACCOUNTS = "android.permission.AUTHENTICATE_ACCOUNTS";
++    field public static final java.lang.String BACKUP = "android.permission.BACKUP";
+     field public static final java.lang.String BATTERY_STATS = "android.permission.BATTERY_STATS";
+     field public static final java.lang.String BIND_ACCESSIBILITY_SERVICE = "android.permission.BIND_ACCESSIBILITY_SERVICE";
+     field public static final java.lang.String BIND_APPWIDGET = "android.permission.BIND_APPWIDGET";
+@@ -78,6 +79,7 @@ package android {
+     field public static final java.lang.String INSTALL_SHORTCUT = "com.android.launcher.permission.INSTALL_SHORTCUT";
+     field public static final java.lang.String INTERNAL_SYSTEM_WINDOW = "android.permission.INTERNAL_SYSTEM_WINDOW";
+     field public static final java.lang.String INTERNET = "android.permission.INTERNET";
++    field public static final java.lang.String INVOKE_CARRIER_SETUP = "android.permission.INVOKE_CARRIER_SETUP";
+     field public static final java.lang.String KILL_BACKGROUND_PROCESSES = "android.permission.KILL_BACKGROUND_PROCESSES";
+     field public static final java.lang.String LOCATION_HARDWARE = "android.permission.LOCATION_HARDWARE";
+     field public static final java.lang.String MANAGE_ACCOUNTS = "android.permission.MANAGE_ACCOUNTS";
+@@ -101,6 +103,7 @@ package android {
+     field public static final deprecated java.lang.String READ_INPUT_STATE = "android.permission.READ_INPUT_STATE";
+     field public static final java.lang.String READ_LOGS = "android.permission.READ_LOGS";
+     field public static final java.lang.String READ_PHONE_STATE = "android.permission.READ_PHONE_STATE";
++    field public static final java.lang.String READ_PRIVILEGED_PHONE_STATE = "android.permission.READ_PRIVILEGED_PHONE_STATE";
+     field public static final java.lang.String READ_PROFILE = "android.permission.READ_PROFILE";
+     field public static final java.lang.String READ_SMS = "android.permission.READ_SMS";
+     field public static final deprecated java.lang.String READ_SOCIAL_STREAM = "android.permission.READ_SOCIAL_STREAM";
+@@ -110,6 +113,7 @@ package android {
+     field public static final java.lang.String READ_VOICEMAIL = "com.android.voicemail.permission.READ_VOICEMAIL";
+     field public static final java.lang.String REBOOT = "android.permission.REBOOT";
+     field public static final java.lang.String RECEIVE_BOOT_COMPLETED = "android.permission.RECEIVE_BOOT_COMPLETED";
++    field public static final java.lang.String RECEIVE_EMERGENCY_BROADCAST = "android.permission.RECEIVE_EMERGENCY_BROADCAST";
+     field public static final java.lang.String RECEIVE_MMS = "android.permission.RECEIVE_MMS";
+     field public static final java.lang.String RECEIVE_SMS = "android.permission.RECEIVE_SMS";
+     field public static final java.lang.String RECEIVE_WAP_PUSH = "android.permission.RECEIVE_WAP_PUSH";
+diff --git a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
+index 347db05..5acf583d 100644
+--- a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
++++ b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
+@@ -1100,7 +1100,7 @@ public class LegacyMetadataMapper {
+                 return CONTROL_AE_ANTIBANDING_MODE_OFF;
+             }
+             case Camera.Parameters.ANTIBANDING_50HZ: {
+-                return CONTROL_AE_ANTIBANDING_MODE_50HZ;
++                return /* CONTROL_AE_ANTIBANDING_MODE_50HZ */ CONTROL_AE_ANTIBANDING_MODE_AUTO;
+             }
+             case Camera.Parameters.ANTIBANDING_60HZ: {
+                 return CONTROL_AE_ANTIBANDING_MODE_60HZ;
+diff --git a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
+index 61f7b8b..f370103 100644
+--- a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
++++ b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
+@@ -617,7 +617,7 @@ public class LegacyRequestMapper {
+                 return Parameters.ANTIBANDING_60HZ;
+             }
+             case CONTROL_AE_ANTIBANDING_MODE_AUTO: {
+-                return Parameters.ANTIBANDING_AUTO;
++                return Parameters.ANTIBANDING_50HZ /* Parameters.ANTIBANDING_AUTO */;
+             }
+             default: {
+                 return null;
+diff --git a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
+index d461bca..a34a758 100644
+--- a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
++++ b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
+@@ -124,7 +124,7 @@ public class CameraBinderDecorator {
+             case EUSERS:
+                 throw new CameraRuntimeException(MAX_CAMERAS_IN_USE);
+             case ENODEV:
+-                throw new CameraRuntimeException(CAMERA_DISCONNECTED);
++                throw new CameraRuntimeException(/*CAMERA_DISCONNECTED*/ MAX_CAMERAS_IN_USE);
+             case EOPNOTSUPP:
+                 throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
+             case INVALID_OPERATION:
+diff --git a/core/java/android/net/ConnectivityManager.java b/core/java/android/net/ConnectivityManager.java
+index 57706da..eaf898b 100644
+--- a/core/java/android/net/ConnectivityManager.java
++++ b/core/java/android/net/ConnectivityManager.java
+@@ -1169,7 +1169,13 @@ public class ConnectivityManager {
+      *             {@link #setProcessDefaultNetwork} and {@link Network#getSocketFactory} api.
+      */
+     public boolean requestRouteToHost(int networkType, int hostAddress) {
+-        return requestRouteToHostAddress(networkType, NetworkUtils.intToInetAddress(hostAddress));
++        InetAddress inetAddress = NetworkUtils.intToInetAddress(hostAddress);
++
++        if (inetAddress == null) {
++            return false;
++        }
++
++        return requestRouteToHostAddress(networkType, inetAddress);
+     }
+ 
+     /**
+@@ -1187,8 +1193,9 @@ public class ConnectivityManager {
+      *             {@link #setProcessDefaultNetwork} api.
+      */
+     public boolean requestRouteToHostAddress(int networkType, InetAddress hostAddress) {
++        byte[] address = hostAddress.getAddress();
+         try {
+-            return mService.requestRouteToHostAddress(networkType, hostAddress.getAddress());
++            return mService.requestRouteToHostAddress(networkType, address);
+         } catch (RemoteException e) {
+             return false;
+         }
+diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
+index 243a0fc..691c342 100644
+--- a/core/java/android/view/KeyEvent.java
++++ b/core/java/android/view/KeyEvent.java
+@@ -1809,6 +1809,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
+             case KeyEvent.KEYCODE_SLEEP:
+             case KeyEvent.KEYCODE_WAKEUP:
+             case KeyEvent.KEYCODE_PAIRING:
++            case KeyEvent.KEYCODE_HOME:
+                 return true;
+         }
+         return false;
+diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
+index 68df6f1..d9c94f6 100755
+--- a/core/res/res/values/config.xml
++++ b/core/res/res/values/config.xml
+@@ -2028,4 +2028,7 @@
+ 
+     <!-- Whether to start in touch mode -->
+     <bool name="config_defaultInTouchMode">true</bool>
++
++    <!-- Boolean to enable stk functionality on Samsung phones -->
++    <bool name="config_samsung_stk">false</bool>
+ </resources>
+diff --git a/core/res/res/values/symbols.xml b/core/res/res/values/symbols.xml
+index 1055547..abe517f 100755
+--- a/core/res/res/values/symbols.xml
++++ b/core/res/res/values/symbols.xml
+@@ -2137,6 +2137,8 @@
+   <java-symbol type="bool" name="config_defaultWindowFeatureOptionsPanel" />
+   <java-symbol type="bool" name="config_defaultWindowFeatureContextMenu" />
+ 
++  <java-symbol type="bool" name="config_samsung_stk" />
++
+   <java-symbol type="layout" name="simple_account_item" />
+   <java-symbol type="id" name="scrollIndicatorUp" />
+   <java-symbol type="id" name="scrollIndicatorDown" />
+diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
+index 78610ff..49cc524 100644
+--- a/services/core/java/com/android/server/display/DisplayPowerController.java
++++ b/services/core/java/com/android/server/display/DisplayPowerController.java
+@@ -584,6 +584,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         // Use zero brightness when screen is off.
+         if (state == Display.STATE_OFF) {
+             brightness = PowerManager.BRIGHTNESS_OFF;
++            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(brightness);
+         }
+ 
+         // Configure auto-brightness.
+@@ -632,6 +633,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         if (brightness < 0 && (state == Display.STATE_DOZE
+                 || state == Display.STATE_DOZE_SUSPEND)) {
+             brightness = mScreenBrightnessDozeConfig;
++            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(PowerManager.BRIGHTNESS_OFF);
+         }
+ 
+         // Apply manual brightness.
+diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
+index 9371222..db734ef 100644
+--- a/services/core/java/com/android/server/power/PowerManagerService.java
++++ b/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -148,6 +148,8 @@ public final class PowerManagerService extends SystemService
+     private static final int POWER_HINT_INTERACTION = 2;
+     private static final int POWER_HINT_LOW_POWER = 5;
+ 
++    private static final int BUTTON_ON_DURATION = 2 * 1000;
++
+     private final Context mContext;
+     private final ServiceThread mHandlerThread;
+     private final PowerManagerHandler mHandler;
+@@ -163,6 +165,7 @@ public final class PowerManagerService extends SystemService
+     private SettingsObserver mSettingsObserver;
+     private DreamManagerInternal mDreamManager;
+     private Light mAttentionLight;
++    private Light mButtonsLight;
+ 
+     private final Object mLock = new Object();
+ 
+@@ -203,6 +206,7 @@ public final class PowerManagerService extends SystemService
+     // Timestamp of the last call to user activity.
+     private long mLastUserActivityTime;
+     private long mLastUserActivityTimeNoChangeLights;
++    private long mLastButtonActivityTime;
+ 
+     // Timestamp of last interactive power hint.
+     private long mLastInteractivePowerHintTime;
+@@ -510,6 +514,7 @@ public final class PowerManagerService extends SystemService
+ 
+             mLightsManager = getLocalService(LightsManager.class);
+             mAttentionLight = mLightsManager.getLight(LightsManager.LIGHT_ID_ATTENTION);
++            mButtonsLight = mLightsManager.getLight(LightsManager.LIGHT_ID_BUTTONS);
+ 
+             // Initialize display power management.
+             mDisplayManagerInternal.initPowerManagement(
+@@ -984,6 +989,11 @@ public final class PowerManagerService extends SystemService
+                     return true;
+                 }
+             } else {
++                if (eventTime > mLastButtonActivityTime && (event & PowerManager.USER_ACTIVITY_EVENT_BUTTON) != 0) {
++                    mLastButtonActivityTime = eventTime;
++                    mDirty |= DIRTY_USER_ACTIVITY;
++                }
++
+                 if (eventTime > mLastUserActivityTime) {
+                     mLastUserActivityTime = eventTime;
+                     mDirty |= DIRTY_USER_ACTIVITY;
+@@ -1457,6 +1467,12 @@ public final class PowerManagerService extends SystemService
+                     nextTimeout = mLastUserActivityTime
+                             + screenOffTimeout - screenDimDuration;
+                     if (now < nextTimeout) {
++                        if (now > mLastButtonActivityTime + BUTTON_ON_DURATION) {
++                            mButtonsLight.setBrightness(0);
++                        } else {
++                            mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
++                            nextTimeout = now + BUTTON_ON_DURATION;
++                        }
+                         mUserActivitySummary = USER_ACTIVITY_SCREEN_BRIGHT;
+                     } else {
+                         nextTimeout = mLastUserActivityTime + screenOffTimeout;
+diff --git a/telephony/java/android/telephony/TelephonyManager.java b/telephony/java/android/telephony/TelephonyManager.java
+index db0da61..f22e300 100644
+--- a/telephony/java/android/telephony/TelephonyManager.java
++++ b/telephony/java/android/telephony/TelephonyManager.java
+@@ -2876,49 +2876,19 @@ public class TelephonyManager {
+      * @hide
+      */
+     public static void setTelephonyProperty(int phoneId, String property, String value) {
+-        String propVal = "";
+-        String p[] = null;
+-        String prop = SystemProperties.get(property);
+-
+-        if (value == null) {
+-            value = "";
+-        }
+-
+-        if (prop != null) {
+-            p = prop.split(",");
+-        }
+-
+         if (!SubscriptionManager.isValidPhoneId(phoneId)) {
+             Rlog.d(TAG, "setTelephonyProperty: invalid phoneId=" + phoneId +
+-                    " property=" + property + " value: " + value + " prop=" + prop);
++                    " property=" + property + " value: " + value);
+             return;
+         }
+ 
+-        for (int i = 0; i < phoneId; i++) {
+-            String str = "";
+-            if ((p != null) && (i < p.length)) {
+-                str = p[i];
+-            }
+-            propVal = propVal + str + ",";
+-        }
+-
+-        propVal = propVal + value;
+-        if (p != null) {
+-            for (int i = phoneId + 1; i < p.length; i++) {
+-                propVal = propVal + "," + p[i];
+-            }
+-        }
+-
+-        if (property.length() > SystemProperties.PROP_NAME_MAX
+-                || propVal.length() > SystemProperties.PROP_VALUE_MAX) {
+-            Rlog.d(TAG, "setTelephonyProperty: property to long phoneId=" + phoneId +
+-                    " property=" + property + " value: " + value + " propVal=" + propVal);
+-            return;
++        if (phoneId > 0) {
++            property += "_" + phoneId;
+         }
+ 
+         Rlog.d(TAG, "setTelephonyProperty: success phoneId=" + phoneId +
+-                " property=" + property + " value: " + value + " propVal=" + propVal);
+-        SystemProperties.set(property, propVal);
++                " property=" + property + " value: " + value);
++        SystemProperties.set(property, value);
+     }
+ 
+     /**
+@@ -3015,17 +2985,22 @@ public class TelephonyManager {
+      * @hide
+      */
+     public static String getTelephonyProperty(int phoneId, String property, String defaultVal) {
+-        String propVal = null;
+-        String prop = SystemProperties.get(property);
+-        if ((prop != null) && (prop.length() > 0)) {
+-            String values[] = prop.split(",");
+-            if ((phoneId >= 0) && (phoneId < values.length) && (values[phoneId] != null)) {
+-                propVal = values[phoneId];
+-            }
++        if (!SubscriptionManager.isValidPhoneId(phoneId)) {
++            Rlog.d(TAG, "getTelephonyProperty: invalid phoneId=" + phoneId +
++                    " property=" + property);
++            return defaultVal;
+         }
++
++        if (phoneId > 0) {
++            property += "_" + phoneId;
++        }
++
++        String propVal = SystemProperties.get(property);
++
+         Rlog.d(TAG, "getTelephonyProperty: return propVal='" + propVal + "' phoneId=" + phoneId
+-                + " property='" + property + "' defaultVal='" + defaultVal + "' prop=" + prop);
+-        return propVal == null ? defaultVal : propVal;
++                + " property='" + property + "' defaultVal='" + defaultVal);
++
++        return propVal.isEmpty() ? defaultVal : propVal;
+     }
+ 
+     /** @hide */
+diff --git a/telephony/java/com/android/internal/telephony/RILConstants.java b/telephony/java/com/android/internal/telephony/RILConstants.java
+index 082e8bb..11f35cb 100644
+--- a/telephony/java/com/android/internal/telephony/RILConstants.java
++++ b/telephony/java/com/android/internal/telephony/RILConstants.java
+@@ -354,4 +354,5 @@ cat include/telephony/ril.h | \
+     int RIL_UNSOL_RADIO_CAPABILITY = 1042;
+     int RIL_UNSOL_ON_SS = 1043;
+     int RIL_UNSOL_STK_CC_ALPHA_NOTIFY = 1044;
++    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
+ }
