@@ -73,36 +73,20 @@ index d461bca..a34a758 100644
              case EOPNOTSUPP:
                  throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
              case INVALID_OPERATION:
-diff --git a/core/java/android/net/ConnectivityManager.java b/core/java/android/net/ConnectivityManager.java
-index 57706da..eaf898b 100644
---- a/core/java/android/net/ConnectivityManager.java
-+++ b/core/java/android/net/ConnectivityManager.java
-@@ -1169,7 +1169,13 @@ public class ConnectivityManager {
-      *             {@link #setProcessDefaultNetwork} and {@link Network#getSocketFactory} api.
-      */
-     public boolean requestRouteToHost(int networkType, int hostAddress) {
--        return requestRouteToHostAddress(networkType, NetworkUtils.intToInetAddress(hostAddress));
-+        InetAddress inetAddress = NetworkUtils.intToInetAddress(hostAddress);
-+
-+        if (inetAddress == null) {
-+            return false;
-+        }
-+
-+        return requestRouteToHostAddress(networkType, inetAddress);
-     }
- 
-     /**
-@@ -1187,8 +1193,9 @@ public class ConnectivityManager {
-      *             {@link #setProcessDefaultNetwork} api.
-      */
-     public boolean requestRouteToHostAddress(int networkType, InetAddress hostAddress) {
-+        byte[] address = hostAddress.getAddress();
-         try {
--            return mService.requestRouteToHostAddress(networkType, hostAddress.getAddress());
-+            return mService.requestRouteToHostAddress(networkType, address);
-         } catch (RemoteException e) {
-             return false;
+diff --git a/core/java/android/net/RouteInfo.java b/core/java/android/net/RouteInfo.java
+index cfd20a0..e53bd65 100644
+--- a/core/java/android/net/RouteInfo.java
++++ b/core/java/android/net/RouteInfo.java
+@@ -142,7 +142,8 @@ public final class RouteInfo implements Parcelable {
+                 gateway = Inet6Address.ANY;
+             }
          }
+-        mHasGateway = (!gateway.isAnyLocalAddress());
++        mHasGateway = false; // force no gateway so moible data works
++        // mHasGateway = (!gateway.isAnyLocalAddress());
+ 
+         if ((destination.getAddress() instanceof Inet4Address &&
+                  (gateway instanceof Inet4Address == false)) ||
 diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
 index 243a0fc..691c342 100644
 --- a/core/java/android/view/KeyEvent.java
@@ -140,6 +124,19 @@ index 1055547..abe517f 100755
    <java-symbol type="layout" name="simple_account_item" />
    <java-symbol type="id" name="scrollIndicatorUp" />
    <java-symbol type="id" name="scrollIndicatorDown" />
+diff --git a/services/core/java/com/android/server/NetworkManagementService.java b/services/core/java/com/android/server/NetworkManagementService.java
+index 18bf838..f67700d 100644
+--- a/services/core/java/com/android/server/NetworkManagementService.java
++++ b/services/core/java/com/android/server/NetworkManagementService.java
+@@ -710,7 +710,7 @@ public class NetworkManagementService extends INetworkManagementService.Stub
+                         timestampNanos = SystemClock.elapsedRealtimeNanos();
+                     }
+                     boolean isActive = cooked[2].equals("active");
+-                    notifyInterfaceClassActivity(Integer.parseInt(cooked[3]),
++                    notifyInterfaceClassActivity(cooked[3] == null ? 0 : Integer.parseInt(cooked[3]),
+                             isActive ? DataConnectionRealTimeInfo.DC_POWER_STATE_HIGH
+                             : DataConnectionRealTimeInfo.DC_POWER_STATE_LOW, timestampNanos, false);
+                     return true;
 diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
 index 78610ff..49cc524 100644
 --- a/services/core/java/com/android/server/display/DisplayPowerController.java

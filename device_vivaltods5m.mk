@@ -27,7 +27,6 @@ PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/ramdisk/init.rc:root/init.rc \
 	device/samsung/vivaltods5m/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
 	device/samsung/vivaltods5m/ramdisk/init.wifi.rc:root/init.wifi.rc \
-	device/samsung/vivaltods5m/ramdisk/lpm.rc:root/lpm.rc \
 	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
 
 # Codec config
