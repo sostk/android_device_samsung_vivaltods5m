@@ -17,9 +17,6 @@ on early-init
     # Apply strict SELinux checking of PROT_EXEC on mmap/mprotect calls.
     write /sys/fs/selinux/checkreqprot 0
 
-    # Disable selinux (temporary)
-    write /sys/fs/selinux/enforce 0
-
     # Set the security context for the init process.
     # This should occur before anything else (e.g. ueventd) is started.
     setcon u:r:init:s0
