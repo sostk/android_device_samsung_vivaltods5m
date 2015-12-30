@@ -61,6 +61,10 @@ PRODUCT_COPY_FILES += \
 # APN config
 PRODUCT_COPY_FILES += device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
 
+# Data workaround
+PRODUCT_COPY_FILES += \
+	device/samsung/vivaltods5m/configs/enable_data:system/bin/enable_data
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
 	make_ext4fs \

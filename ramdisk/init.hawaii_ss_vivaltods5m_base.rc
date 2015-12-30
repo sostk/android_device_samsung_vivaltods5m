@@ -321,7 +321,7 @@ on fs
     chmod 0664 /data/brcm/utils
 
 #Enable PMTUD tcp_mtu_probing
-    write /proc/sys/net/ipv4/tcp_mtu_probing 1
+    write /proc/sys/net/ipv4/tcp_mtu_probing 2
 
 # needed to avoid the 7-minute-halt issue in (DOS) passive mode ftp on vodafone networ
     write /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal 1
@@ -436,6 +436,11 @@ service watchdogd /system/bin/watchdogd
     group root
     oneshot
 
+# GSM/HSDPA data workaround
+service data_workaround /system/bin/enable_data
+    user root
+    disabled
+
 # virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
     class late_start
@@ -449,10 +454,11 @@ service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1
 on property:vold.decrypt=trigger_restart_framework
     setprop ro.fuse_sdcard ${persist.fuse_sdcard}
 
-on property:ril.boot_completed=1
+# Change governor to interactive
+on property:dev.bootcomplete=1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1100000
-    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 50
+    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 85
     write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 6000
     write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 30000
     write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 2000
@@ -491,3 +497,7 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
 
 on property:ro.dumpstate.dmesg=1
     write /proc/sys/kernel/dmesg_restrict 1
+
+# GSM/HSDPA data Workaroud
+on property:gsm.defaultpdpcontext.active=true
+    start data_workaround

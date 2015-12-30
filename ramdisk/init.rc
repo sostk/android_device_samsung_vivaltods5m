@@ -390,8 +390,18 @@ on boot
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
 
     # Assume SMP uses shared cpufreq policy for all CPUs
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+    chmod 0660 /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+    chmod 0660 /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
 
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
@@ -436,24 +446,7 @@ on charger
     chmod 0666 /dev/log/event
 
     write /sys/module/pwr_mgr/parameters/pm_late_init 1
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
-    chmod 660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
-    chmod 660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
-    chmod 660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    chmod 660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
-    chmod 660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
-    chmod 220 /sys/devices/system/cpu/cpufreq/interactive/boostpulse
-    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 800000
-    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 70
-    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 6000
-    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 15000
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 2000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
 
     class_start charger
 
