@@ -73,32 +73,6 @@ index d461bca..a34a758 100644
              case EOPNOTSUPP:
                  throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
              case INVALID_OPERATION:
-diff --git a/core/java/android/net/RouteInfo.java b/core/java/android/net/RouteInfo.java
-index cfd20a0..e53bd65 100644
---- a/core/java/android/net/RouteInfo.java
-+++ b/core/java/android/net/RouteInfo.java
-@@ -142,7 +142,8 @@ public final class RouteInfo implements Parcelable {
-                 gateway = Inet6Address.ANY;
-             }
-         }
--        mHasGateway = (!gateway.isAnyLocalAddress());
-+        mHasGateway = false; // force no gateway so moible data works
-+        // mHasGateway = (!gateway.isAnyLocalAddress());
- 
-         if ((destination.getAddress() instanceof Inet4Address &&
-                  (gateway instanceof Inet4Address == false)) ||
-diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
-index 243a0fc..691c342 100644
---- a/core/java/android/view/KeyEvent.java
-+++ b/core/java/android/view/KeyEvent.java
-@@ -1809,6 +1809,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
-             case KeyEvent.KEYCODE_SLEEP:
-             case KeyEvent.KEYCODE_WAKEUP:
-             case KeyEvent.KEYCODE_PAIRING:
-+            case KeyEvent.KEYCODE_HOME:
-                 return true;
-         }
-         return false;
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
 index 68df6f1..d9c94f6 100755
 --- a/core/res/res/values/config.xml
