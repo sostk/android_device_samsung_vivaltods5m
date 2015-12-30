@@ -1,38 +1,54 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-$(call inherit-product-if-exists, vendor/samsung/logands/logands-common-vendor.mk)
+# The gps config appropriate for this device
+$(call inherit-product, device/common/gps/gps_us_supl.mk)
+
+$(call inherit-product-if-exists, vendor/samsung/vivaltods5m/vivaltods5m-vendor.mk)
 
 # Use high-density artwork where available
 PRODUCT_LOCALES += hdpi
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 
-DEVICE_PACKAGE_OVERLAYS += device/samsung/logands/overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/vivaltods5m/overlay
 
 # Init files
 PRODUCT_COPY_FILES += \
-	device/samsung/logands/ramdisk/fstab.hawaii_ss_logands:root/fstab.hawaii_ss_logands \
-	device/samsung/logands/ramdisk/init.rc:root/init.rc \
-	device/samsung/logands/ramdisk/init.hawaii_ss_logands.rc:root/init.hawaii_ss_logands.rc \
-	device/samsung/logands/ramdisk/init.bcm2166x.usb.rc:root/init.bcm2166x.usb.rc \
-	device/samsung/logands/ramdisk/init.log.rc:root/init.log.rc \
-	device/samsung/logands/ramdisk/charger:root/charger \
-	device/samsung/logands/ramdisk/ueventd.hawaii_ss_logands.rc:root/ueventd.hawaii_ss_logands.rc
+	device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m:root/fstab.hawaii_ss_vivaltods5m \
+	device/samsung/vivaltods5m/ramdisk/init.hawaii_ss_vivaltods5m.rc:root/init.hawaii_ss_vivaltods5m.rc \
+	device/samsung/vivaltods5m/ramdisk/init.hawaii_ss_vivaltods5m_base.rc:root/init.hawaii_ss_vivaltods5m_base.rc \
+	device/samsung/vivaltods5m/ramdisk/init.log.rc:root/init.log.rc \
+	device/samsung/vivaltods5m/ramdisk/init.rc:root/init.rc \
+	device/samsung/vivaltods5m/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
+	device/samsung/vivaltods5m/ramdisk/init.wifi.rc:root/init.wifi.rc \
+	device/samsung/vivaltods5m/ramdisk/lpm.rc:root/lpm.rc \
+	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
 	
 PRODUCT_COPY_FILES += \
-	device/samsung/logands/configs/media_profiles.xml:system/etc/media_profiles.xml \
-	device/samsung/logands/configs/audio_policy.conf:system/etc/audio_policy.conf \
+	device/samsung/vivaltods5m/configs/media_profiles.xml:system/etc/media_profiles.xml \
+	device/samsung/vivaltods5m/configs/audio_policy.conf:system/etc/audio_policy.conf \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
- 	device/samsung/logands/configs/media_codecs.xml:system/etc/media_codecs.xml 
+ 	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml 
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
-	device/samsung/logands/keylayouts/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
-	device/samsung/logands/keylayouts/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
-	device/samsung/logands/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
-	device/samsung/logands/keylayouts/samsung-keypad.kl:system/usr/keylayout/samsung-keypad.kl
+	device/samsung/vivaltods5m/keylayouts/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
+	device/samsung/vivaltods5m/keylayouts/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
+	device/samsung/vivaltods5m/keylayouts/bcmpmu_on.kl:system/usr/keylayout/bcmpmu_on.kl \
+	device/samsung/vivaltods5m/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+	device/samsung/vivaltods5m/keylayouts/ist30xx_ts_input.kl:system/usr/keylayout/ist30xx_ts_input.kl
+
+# Bluetooth config
+PRODUCT_COPY_FILES += \
+	device/samsung/vivaltods5m/configs/bluetooth/bt_did.conf:system/etc/bluetooth/bt_did.conf \
+	device/samsung/vivaltods5m/configs/bluetooth/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
+
+# WiFi config
+PRODUCT_COPY_FILES += \
+	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
+	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -58,7 +74,10 @@ PRODUCT_PACKAGES += \
 	audio.a2dp.default \
 	audio.usb.default \
 	audio.r_submix.default \
-	audio.primary.default
+	audio.primary.default \
+	libnetcmdiface \
+	libstagefrighthw \
+	lights.hawaii
 
 # Device-specific packages
 PRODUCT_PACKAGES += \
@@ -72,8 +91,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
 	dhcpcd.conf \
 	hostapd \
-	wpa_supplicant \
-	wpa_supplicant.conf
+	wpa_supplicant
 
 # Samsung Doze
 PRODUCT_PACKAGES += \
@@ -109,7 +127,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	mobiledata.interfaces=rmnet0 \
 	ro.telephony.ril_class=SamsungBCMRIL \
 	persist.radio.multisim.config=dsds \
-	cm.updater.uri=http://ota.androiddev.pp.ua \
+	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA \
 	ro.telephony.call_ring.multiple=0 \
 	camera2.portability.force_api=1 \
 	ro.telephony.call_ring=0
@@ -130,6 +148,6 @@ else
 endif
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_logands
-PRODUCT_DEVICE := logands
-PRODUCT_MODEL := GT-S7272
+PRODUCT_NAME := full_vivaltods5m
+PRODUCT_DEVICE := vivaltods5m
+PRODUCT_MODEL := SM-G313HU

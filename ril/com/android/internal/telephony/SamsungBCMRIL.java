@@ -42,7 +42,7 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
     public SamsungBCMRIL(Context context, int networkMode, int cdmaSubscription) {
         this(context, networkMode, cdmaSubscription, null);
     }
-
+    
     public SamsungBCMRIL(Context context, int networkMode,
             int cdmaSubscription, Integer instanceId) {
         super(context, networkMode, cdmaSubscription, instanceId);
@@ -56,6 +56,8 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
         rr.mParcel.writeString(address);
         rr.mParcel.writeInt(clirMode);
         rr.mParcel.writeInt(0); // UUS information is absent: Samsung BCM compat
+        rr.mParcel.writeInt(1);
+        rr.mParcel.writeString("");
 
         if (uusInfo == null) {
             rr.mParcel.writeInt(0); // UUS information is absent
@@ -365,6 +367,9 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
             //printing it to cosole for later investigation
             Rlog.d(RILJ_LOG_TAG, "Samsung magic = " + voiceSettings);
             dc.isVoicePrivacy = (0 != p.readInt());
+            p.readInt(); // Samsung callDetails
+            p.readInt(); // Samsung callDetails
+            p.readString(); // Samsung callDetails
             dc.number = p.readString();
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
@@ -406,5 +411,4 @@ public class SamsungBCMRIL extends RIL implements CommandsInterface {
 
         return response;
     }
-
 }

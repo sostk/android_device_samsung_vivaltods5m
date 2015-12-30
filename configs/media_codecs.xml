@@ -76,22 +76,57 @@ Only the three quirks included above are recognized at this point:
 -->
 
 <MediaCodecs>
-	<Include href="media_codecs_google_audio.xml" />
+    <!-- Software codecs -->
+    <Include href="media_codecs_google_audio.xml" />
     <Include href="media_codecs_google_telephony.xml" />
+
+    <!-- Hardware codecs -->
     <Decoders>
-		<MediaCodec name="OMX.brcm.video.h264.hw.decoder" type="video/avc">
-			<Quirk name="requires-allocate-on-input-ports" />
-		</MediaCodec>
-		<MediaCodec name="OMX.ffmpeg.ac3.decoder" type="audio/ac3" >
+        <MediaCodec name="OMX.brcm.video.mpeg4.hw.decoder" type="video/mp4v-es">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.vc1.hw.decoder" type="video/asf">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.vc1.hw.decoder" type="video/wvc1">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.vc1.hw.decoder" type="video/x-ms-wmv">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.vc1.hw.decoder" type="video/wmv1">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.vc1.hw.decoder" type="video/wmv3">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.h263.hw.decoder" type="video/3gpp">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <MediaCodec name="OMX.brcm.video.h264.hw.decoder" type="video/avc">
+            <Quirk name="requires-allocate-on-input-ports" />
+        </MediaCodec>
+        <!-- FFMpeg AC3 decoder -->
+        <MediaCodec name="OMX.ffmpeg.ac3.decoder" type="audio/ac3" >
             <Limit name="channel-count" max="8" />
             <Limit name="sample-rate" ranges="8000-192000" />
-		</MediaCodec>
+        </MediaCodec>
     </Decoders>
-	
+    
+    <!-- Hardware codecs -->
     <Encoders>
-		<MediaCodec name="OMX.brcm.video.h264.hw.encoder" type="video/avc" />
-		<MediaCodec name="OMX.brcm.audio.aac.encoder" type="audio/mp4a-latm" />
+        <MediaCodec name="OMX.brcm.video.h264.async.hw.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.video.h264.hw.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.video.h264.async.hw.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.video.mpeg4.encoder" type="video/mp4v-es" />
+        <MediaCodec name="OMX.brcm.video.h263.encoder" type="video/3gpp" />
+        <MediaCodec name="OMX.brcm.video.h264.encoder" type="video/avc" />
+        <MediaCodec name="OMX.brcm.audio.amrnb.encoder" type="audio/3gpp" />
+        <MediaCodec name="OMX.brcm.audio.amrwb.encoder" type="audio/amr-wb" />
+        <MediaCodec name="OMX.brcm.audio.aac.encoder" type="audio/mp4a-latm" />
     </Encoders>
-	<Include href="media_codecs_google_video_le.xml" />
-	<Include href="media_codecs_ffmpeg.xml" />
+
+    <!-- Software codecs -->
+    <Include href="media_codecs_google_video_le.xml" />
+    <Include href="media_codecs_ffmpeg.xml" />
 </MediaCodecs>

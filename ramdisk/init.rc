@@ -9,9 +9,7 @@ import /init.usb.rc
 import /init.${ro.hardware}.rc
 import /init.${ro.zygote}.rc
 import /init.trace.rc
-# Include CM's extra init file
 import /init.cm.rc
-
 
 on early-init
     # Set init and its forked children's oom_adj.
@@ -62,6 +60,7 @@ on init
     write /sys/fs/cgroup/memory/sw/memory.move_charge_at_immigrate 1
     chown root system /sys/fs/cgroup/memory/sw/tasks
     chmod 0660 /sys/fs/cgroup/memory/sw/tasks
+    chmod 0220 /sys/fs/cgroup/memory/cgroup.event_control
 
     mkdir /system
     mkdir /data 0771 system system
@@ -392,8 +391,18 @@ on boot
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
 
     # Assume SMP uses shared cpufreq policy for all CPUs
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+    chmod 0660 /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+    chmod 0660 /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
 
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
@@ -426,6 +435,22 @@ on nonencrypted
     class_start main
     class_start late_start
 
+on charger
+    mount ext4 /dev/block/mmcblk0p17 /system ro wait noatime
+    exec sfsck /dev/block/mmcblk0p19 ext4
+    mount ext4 /dev/block/mmcblk0p19 /data wait nosuid nodev noatime discard,noauto_da_alloc,journal_async_commit
+
+    mkdir /data/log 0777
+
+    chmod 0666 /dev/log/radio
+    chmod 0666 /dev/log/main
+    chmod 0666 /dev/log/event
+
+    write /sys/module/pwr_mgr/parameters/pm_late_init 1
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
+
+    class_start charger
+
 on property:vold.decrypt=trigger_default_encryption
     start defaultcrypto
 
@@ -435,9 +460,6 @@ on property:vold.decrypt=trigger_encryption
 
 on property:sys.init_log_level=*
     loglevel ${sys.init_log_level}
-
-on charger
-    class_start charger
 
 on property:vold.decrypt=trigger_reset_main
     class_reset main
@@ -492,6 +514,11 @@ service healthd /sbin/healthd
     critical
     seclabel u:r:healthd:s0
 
+service healthd-charger /sbin/healthd -n
+    class charger
+    critical
+    seclabel u:r:healthd:s0
+
 service console /system/bin/sh
     class core
     console
@@ -506,6 +533,11 @@ service auditd /system/bin/auditd -k
 
 on property:ro.debuggable=1
     start console
+
+# Charger
+service lpm /system/bin/lpm
+    class charger
+    critical
 
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd --root_seclabel=u:r:su:s0
@@ -573,7 +605,7 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm qcom_diag
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm
     ioprio rt 4
 
 # One shot invocation to deal with encrypted volume.
