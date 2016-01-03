@@ -3,6 +3,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
+# Vendor blobs
 $(call inherit-product-if-exists, vendor/samsung/vivaltods5m/vivaltods5m-vendor.mk)
 
 # Use high-density artwork where available
@@ -85,7 +86,30 @@ PRODUCT_PACKAGES += \
 
 # Device-specific packages
 PRODUCT_PACKAGES += \
-	SamsungServiceMode
+	SamsungServiceMode \
+	libinit_hawaii_ss
+
+# NFC packages
+# PRODUCT_PACKAGES += \
+#     libnfc-nci \
+#     libnfc_nci_jni \
+#     nfc.nci.hawaii \
+#     NfcNci \
+#     Tag \
+#     com.android.nfc_extras
+
+# NFCEE access control
+# NFCEE_ACCESS_PATH := device/samsung/vivaltods5m/nfc/nfcee_access.xml
+
+# NFC access control + feature files + configuration
+# PRODUCT_COPY_FILES += \
+#     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml \
+#     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
+#     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+#     frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
+#     device/samsung/vivaltods5m/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
+#     device/samsung/vivaltods5m/nfc/libnfc-brcm-20795a10.conf:system/etc/libnfc-brcm-20795a10.conf \
+#     device/samsung/vivaltods5m/nfc/libnfc-sec.conf:system/etc/libnfc-sec.conf
 
 # KSM
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -131,11 +155,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	wifi.interface=wlan0 \
 	mobiledata.interfaces=rmnet0 \
 	ro.telephony.ril_class=SamsungBCMRIL \
-	persist.radio.multisim.config=dsds \
-	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA/api \
 	ro.telephony.call_ring.multiple=0 \
+	ro.telephony.call_ring=0 \
 	camera2.portability.force_api=1 \
-	ro.telephony.call_ring=0
+	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA/api
+	#persist.radio.multisim.config=dsds
 
 # MTP
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -155,4 +179,4 @@ endif
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_vivaltods5m
 PRODUCT_DEVICE := vivaltods5m
-PRODUCT_MODEL := SM-G313HU
+PRODUCT_MODEL := CM on Vivalto

@@ -16,10 +16,15 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 TARGET_BOOTLOADER_BOARD_NAME := hawaii
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
+TARGET_UNIFIED_DEVICE := true
 BOARD_VENDOR := samsung
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := vivaltods5m,G313HU,GT-G313HU,hawaii
+# TARGET_OTA_ASSERT_DEVICE := vivaltods5m,G313HU,GT-G313HU,hawaii
+TARGET_OTA_ASSERT_DEVICE := vivaltonfc3g,G313HN,SM-G313HN,vivaltods5m,G313HU,SM-G313HU,hawaii
+
+# Init
+TARGET_INIT_VENDOR_LIB := libinit_hawaii_ss
 
 # Kernel
 BOARD_KERNEL_BASE := 0x81e00000
@@ -136,6 +141,7 @@ TARGET_RECOVERY_DENSITY := hdpi
 
 # CMHW
 BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/vivaltods5m/cmhw/
+BOARD_USE_SAMSUNG_COLORFORMAT := false
 
 # GPS
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/vivaltods5m/include

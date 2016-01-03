@@ -34,7 +34,7 @@ on init
     symlink /dev/block/mmcblk0p11 /dev/block/param
 
 # Dual sim enabled = 1, disabled = 0
-    setprop ro.dual.sim.phone 1
+#    setprop ro.dual.sim.phone 1
 
 # SecEDS
     setprop ro.SecEDS.enable false
@@ -306,6 +306,17 @@ on fs
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chmod 0777 /system/bin/btld
 
+# NFC_BROADCOM
+    setprop ro.nfc.port "I2C"
+    chmod 0600 /dev/bcm2079x
+    chown nfc nfc /dev/bcm2079x
+    mkdir /data/bcmnfc
+    mkdir /data/bcmnfc/param
+    chmod 0755 /data/bcmnfc
+    chmod 0755 /data/bcmnfc/param
+    chown nfc nfc /data/bcmnfc
+    chown nfc nfc /data/bcmnfc/param
+
 #for ASE application
     mkdir /data/brcm
     mkdir /data/brcm/ase
@@ -400,15 +411,6 @@ on property:service.bootanim.exit=1
 
 on property:ro.debuggable=1
     start console
-
-# ril
-service ril-daemon /system/bin/rild
-    class main
-    socket rild stream 660 root radio
-    socket rild1 stream 660 root radio
-    socket rild-debug stream 660 radio system
-    user root
-    group radio cache inet misc audio system sdcard_rw log sdcard_r
 
 service gpsd /system/bin/glgps -c /system/etc/gps/glconfig.xml
     class late_start

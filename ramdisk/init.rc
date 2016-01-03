@@ -436,6 +436,9 @@ on nonencrypted
     class_start late_start
 
 on charger
+    # Disable selinux (temporary)
+    write /sys/fs/selinux/enforce 0
+
     mount ext4 /dev/block/mmcblk0p17 /system ro wait noatime
     exec sfsck /dev/block/mmcblk0p19 ext4
     mount ext4 /dev/block/mmcblk0p19 /data wait nosuid nodev noatime discard,noauto_da_alloc,journal_async_commit
@@ -494,7 +497,6 @@ on property:sys.sysctl.extra_free_kbytes=*
 on property:sys.sysctl.tcp_def_init_rwnd=*
     write /proc/sys/net/ipv4/tcp_default_init_rwnd ${sys.sysctl.tcp_def_init_rwnd}
 
-
 ## Daemon processes to be run by init.
 ##
 service ueventd /sbin/ueventd
@@ -514,7 +516,7 @@ service healthd /sbin/healthd
     critical
     seclabel u:r:healthd:s0
 
-service healthd-charger /sbin/healthd -n
+service healthd-charger /charger
     class charger
     critical
     seclabel u:r:healthd:s0
@@ -535,9 +537,9 @@ on property:ro.debuggable=1
     start console
 
 # Charger
-service lpm /system/bin/lpm
-    class charger
-    critical
+#service lpm /system/bin/lpm
+#    class charger
+#    critical
 
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd --root_seclabel=u:r:su:s0
@@ -584,12 +586,14 @@ service debuggerd /system/bin/debuggerd
 service debuggerd64 /system/bin/debuggerd64
     class main
 
-#service ril-daemon /system/bin/rild
-#    class main
-#    socket rild stream 660 root radio
-#    socket rild-debug stream 660 radio system
-#    user root
-#    group radio cache inet misc audio sdcard_rw qcom_diag log
+# ril
+service ril-daemon /system/bin/rild
+    class main
+    socket rild stream 660 root radio
+    socket rild1 stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio log
 
 service surfaceflinger /system/bin/surfaceflinger
     class core
