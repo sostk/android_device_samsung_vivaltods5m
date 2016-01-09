@@ -435,6 +435,9 @@ on nonencrypted
     class_start late_start
 
 on charger
+    # Disable selinux (temporary)
+    write /sys/fs/selinux/enforce 0
+
     mount ext4 /dev/block/mmcblk0p17 /system ro wait noatime
     exec sfsck /dev/block/mmcblk0p19 ext4
     mount ext4 /dev/block/mmcblk0p19 /data wait nosuid nodev noatime discard,noauto_da_alloc,journal_async_commit
@@ -532,11 +535,6 @@ service auditd /system/bin/auditd -k
 
 on property:ro.debuggable=1
     start console
-
-# Charger
-service lpm /system/bin/lpm
-    class charger
-    critical
 
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd --root_seclabel=u:r:su:s0

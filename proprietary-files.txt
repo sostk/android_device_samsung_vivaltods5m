@@ -2,7 +2,6 @@ bin/bkmgrd
 bin/edmaudit
 bin/glgps
 bin/gps.cer
-bin/lpm
 bin/macloader
 bin/mfgloader
 bin/watchdogd

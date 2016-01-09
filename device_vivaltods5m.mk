@@ -33,12 +33,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/configs/media_profiles.xml:system/etc/media_profiles.xml \
 	device/samsung/vivaltods5m/configs/audio_policy.conf:system/etc/audio_policy.conf \
+	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
-	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
-	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml \
-	#external/stagefright-plugins/data/media_codecs_ffmpeg.xml:system/etc/media_codecs_ffmpeg.xml
+	external/stagefright-plugins/data/media_codecs_ffmpeg.xml:system/etc/media_codecs_ffmpeg.xml
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
@@ -58,11 +57,10 @@ PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
 	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
-# APN config
-PRODUCT_COPY_FILES += device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
-
+# APN config and
 # Data workaround
 PRODUCT_COPY_FILES += \
+	device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml \
 	device/samsung/vivaltods5m/configs/enable_data:system/bin/enable_data
 
 # Filesystem management tools

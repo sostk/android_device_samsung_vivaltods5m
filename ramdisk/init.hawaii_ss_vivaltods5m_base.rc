@@ -214,7 +214,7 @@ on fs
     mkdir /preload 0771 system system
 
     mount_all /fstab.hawaii_ss_vivaltods5m
-    swapon_all /fstab.hawaii_ss_vivaltods5m
+    #swapon_all /fstab.hawaii_ss_vivaltods5m
 
 # Temporary hack for root access
 #    chown root root /system/xbin/su
