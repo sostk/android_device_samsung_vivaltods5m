@@ -15,45 +15,45 @@ DEVICE_PACKAGE_OVERLAYS += device/samsung/vivaltods5m/overlay
 
 # Init files
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m:root/fstab.hawaii_ss_vivaltods5m \
-	device/samsung/vivaltods5m/ramdisk/init.hawaii_ss_vivaltods5m.rc:root/init.hawaii_ss_vivaltods5m.rc \
-	device/samsung/vivaltods5m/ramdisk/init.hawaii_ss_vivaltods5m_base.rc:root/init.hawaii_ss_vivaltods5m_base.rc \
-	device/samsung/vivaltods5m/ramdisk/init.log.rc:root/init.log.rc \
-	device/samsung/vivaltods5m/ramdisk/init.rc:root/init.rc \
-	device/samsung/vivaltods5m/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
-	device/samsung/vivaltods5m/ramdisk/init.wifi.rc:root/init.wifi.rc \
-	device/samsung/vivaltods5m/ramdisk/lpm.rc:root/lpm.rc \
-	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
+	$(LOCAL_PATH)/ramdisk/fstab.hawaii_ss_vivaltods5m:root/fstab.hawaii_ss_vivaltods5m \
+	$(LOCAL_PATH)/ramdisk/init.hawaii_ss_vivaltods5m.rc:root/init.hawaii_ss_vivaltods5m.rc \
+	$(LOCAL_PATH)/ramdisk/init.hawaii_ss_vivaltods5m_base.rc:root/init.hawaii_ss_vivaltods5m_base.rc \
+	$(LOCAL_PATH)/ramdisk/init.log.rc:root/init.log.rc \
+	$(LOCAL_PATH)/ramdisk/init.rc:root/init.rc \
+	$(LOCAL_PATH)/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
+	$(LOCAL_PATH)/ramdisk/init.wifi.rc:root/init.wifi.rc \
+	$(LOCAL_PATH)/ramdisk/lpm.rc:root/lpm.rc \
+	$(LOCAL_PATH)/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
 	
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/media_profiles.xml:system/etc/media_profiles.xml \
-	device/samsung/vivaltods5m/configs/audio_policy.conf:system/etc/audio_policy.conf \
+	$(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
+	$(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
- 	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml 
+ 	$(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml 
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/keylayouts/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
-	device/samsung/vivaltods5m/keylayouts/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
-	device/samsung/vivaltods5m/keylayouts/bcmpmu_on.kl:system/usr/keylayout/bcmpmu_on.kl \
-	device/samsung/vivaltods5m/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
-	device/samsung/vivaltods5m/keylayouts/ist30xx_ts_input.kl:system/usr/keylayout/ist30xx_ts_input.kl
+	$(LOCAL_PATH)/keylayouts/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
+	$(LOCAL_PATH)/keylayouts/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
+	$(LOCAL_PATH)/keylayouts/bcmpmu_on.kl:system/usr/keylayout/bcmpmu_on.kl \
+	$(LOCAL_PATH)/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+	$(LOCAL_PATH)/keylayouts/ist30xx_ts_input.kl:system/usr/keylayout/ist30xx_ts_input.kl
 
 # Bluetooth config
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/bluetooth/bt_did.conf:system/etc/bluetooth/bt_did.conf \
-	device/samsung/vivaltods5m/configs/bluetooth/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
+	$(LOCAL_PATH)/configs/bluetooth/bt_did.conf:system/etc/bluetooth/bt_did.conf \
+	$(LOCAL_PATH)/configs/bluetooth/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
 
 # WiFi config
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
-	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
+	$(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
+	$(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
 # Data workaround
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/enable_data:system/bin/enable_data
+	$(LOCAL_PATH)/configs/enable_data:system/bin/enable_data
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -90,26 +90,26 @@ PRODUCT_PACKAGES += \
 	libinit_hawaii_ss
 
 # NFC packages
-# PRODUCT_PACKAGES += \
-#     libnfc-nci \
-#     libnfc_nci_jni \
-#     nfc.nci.hawaii \
-#     NfcNci \
-#     Tag \
-#     com.android.nfc_extras
+PRODUCT_PACKAGES += \
+    libnfc-nci \
+    libnfc_nci_jni \
+    nfc.nci.hawaii \
+    NfcNci \
+    Tag \
+    com.android.nfc_extras
 
 # NFCEE access control
-# NFCEE_ACCESS_PATH := device/samsung/vivaltods5m/nfc/nfcee_access.xml
+NFCEE_ACCESS_PATH := device/samsung/vivaltods5m/nfc/nfcee_access.xml
 
 # NFC access control + feature files + configuration
-# PRODUCT_COPY_FILES += \
-#     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml \
-#     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
-#     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
-#     frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
-#     device/samsung/vivaltods5m/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
-#     device/samsung/vivaltods5m/nfc/libnfc-brcm-20795a10.conf:system/etc/libnfc-brcm-20795a10.conf \
-#     device/samsung/vivaltods5m/nfc/libnfc-sec.conf:system/etc/libnfc-sec.conf
+PRODUCT_COPY_FILES += \
+    $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml \
+    frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
+    frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
+    $(LOCAL_PATH)/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
+    $(LOCAL_PATH)/nfc/libnfc-brcm-20795a10.conf:system/etc/libnfc-brcm-20795a10.conf \
+    $(LOCAL_PATH)/nfc/libnfc-sec.conf:system/etc/libnfc-sec.conf
 
 # KSM
 PRODUCT_PROPERTY_OVERRIDES += \

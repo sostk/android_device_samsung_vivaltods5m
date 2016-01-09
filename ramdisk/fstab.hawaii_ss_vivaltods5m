@@ -17,4 +17,4 @@
 #/devices/platform/dwc_otg/usb1			auto		auto	defaults									voldmanaged=usbdisk:auto
 
 # zRam
-/dev/block/zram0	none	swap  defaults	wait,zramsize=131072000
+#/dev/block/zram0	none	swap  defaults	wait,zramsize=33554432
