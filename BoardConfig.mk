@@ -113,7 +113,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd-vivaltods5m.hawaii
 BOARD_RIL_CLASS := ../../../device/samsung/vivaltods5m/ril/
 
 # Philz edits
-RECOVERY_VARIANT := philz
+RECOVERY_VARIANT := cm
 RECOVERY_GRAPHICS_USE_LINELENGTH := true
 DEVICE_RESOLUTION := 480x800
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_10x18.h\"
