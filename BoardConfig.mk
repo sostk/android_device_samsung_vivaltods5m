@@ -66,6 +66,9 @@ BOARD_NO_WIFI_HAL                := true
 TARGET_SCREEN_HEIGHT := 800
 TARGET_SCREEN_WIDTH := 480
 
+# Bootanimation
+TARGET_BOOTANIMATION_SIZE := 480x320
+
 # Hardware rendering
 BOARD_EGL_CFG := device/samsung/vivaltods5m/configs/egl.cfg
 USE_OPENGL_RENDERER := true
@@ -132,7 +135,13 @@ BOARD_RECOVERY_HANDLES_MOUNT := true
 BOARD_USES_MMCUTILS := false
 BOARD_RECOVERY_ALWAYS_WIPES := false
 BOARD_SUPPRESS_EMMC_WIPE := true
+
+# TWRP
 TARGET_RECOVERY_DENSITY := hdpi
+TW_THEME := portrait_hdpi
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+DEVICE_RESOLUTION := 480x800
+BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_10x18.h\"
 
 # CMHW
 BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/vivaltods5m/cmhw/
@@ -148,20 +157,5 @@ MALLOC_IMPL := dlmalloc
 
 BOARD_SEPOLICY_DIRS += \
     device/samsung/vivaltods5m/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    file_contexts \
-    property_contexts \
-    bkmgrd.te \
-    device.te \
-    surfaceflinger.te \
-    bluetooth.te \
-    gpsd.te \
-    init.te \
-    kernel.te \
-    macloader.te \
-    rild.te \
-    shell.te \
-    system_server.te 
 
 # plap

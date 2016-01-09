@@ -214,7 +214,7 @@ on fs
     mkdir /preload 0771 system system
 
     mount_all /fstab.hawaii_ss_vivaltods5m
-    swapon_all /fstab.hawaii_ss_vivaltods5m
+    #swapon_all /fstab.hawaii_ss_vivaltods5m
 
 # Temporary hack for root access
 #    chown root root /system/xbin/su
@@ -446,6 +446,11 @@ service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1
     oneshot
     disabled
 
+# GSM/HSDPA data workaround
+service data_workaround /system/bin/enable_data
+    user root
+    disabled
+
 on property:vold.decrypt=trigger_restart_framework
     setprop ro.fuse_sdcard ${persist.fuse_sdcard}
 
@@ -492,3 +497,7 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
 
 on property:ro.dumpstate.dmesg=1
     write /proc/sys/kernel/dmesg_restrict 1
+
+# GSM/HSDPA data Workaroud
+on property:gsm.defaultpdpcontext.active=true
+    start data_workaround

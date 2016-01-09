@@ -1,5 +1,15 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
+# Copy kernel
+ifeq ($(TARGET_PREBUILT_KERNEL),)
+LOCAL_KERNEL := device/samsung/vivaltods5m/kernel
+
+PRODUCT_COPY_FILES += \
+	$(LOCAL_KERNEL):kernel
+else
+LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
+endif
+
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
@@ -49,6 +59,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
 	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
+
+# APN config and
+# Data workaround
+PRODUCT_COPY_FILES += \
+	device/samsung/vivaltods5m/configs/enable_data:system/bin/enable_data
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -127,7 +142,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	mobiledata.interfaces=rmnet0 \
 	ro.telephony.ril_class=SamsungBCMRIL \
 	persist.radio.multisim.config=dsds \
-	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA \
+	cm.updater.uri=http://akane.02ch.in/CyanogenModOTA/api \
 	ro.telephony.call_ring.multiple=0 \
 	camera2.portability.force_api=1 \
 	ro.telephony.call_ring=0
@@ -150,4 +165,4 @@ endif
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_vivaltods5m
 PRODUCT_DEVICE := vivaltods5m
-PRODUCT_MODEL := SM-G313HU
+PRODUCT_MODEL := Omni on Vivalto
