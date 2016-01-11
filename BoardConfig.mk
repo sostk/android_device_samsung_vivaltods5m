@@ -24,8 +24,8 @@ TARGET_OTA_ASSERT_DEVICE := vivaltods5m,G313HU,SM-G313HU,hawaii
 # Kernel
 BOARD_KERNEL_BASE := 0x81e00000
 BOARD_KERNEL_PAGESIZE := 4096
-TARGET_PREBUILT_KERNEL :=  device/samsung/vivaltods5m/kernel
-BOARD_MKBOOTIMG_ARGS := --second device/samsung/vivaltods5m/second.bin
+TARGET_PREBUILT_KERNEL :=  $(LOCAL_PATH)/kernel
+BOARD_MKBOOTIMG_ARGS := --second $(LOCAL_PATH)/second.bin
 
 # PARTITION SIZE
 BOARD_BOOTIMAGE_PARTITION_SIZE := 8388608
@@ -39,8 +39,8 @@ BOARD_FLASH_BLOCK_SIZE := 262144 #BOARD_KERNEL_PAGESIZE * 64
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/vivaltods5m/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := device/samsung/vivaltods5m/bluetooth/libbt_vndcfg_g313hu.txt
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
+BOARD_BLUEDROID_VENDOR_CONF := $(LOCAL_PATH)/bluetooth/libbt_vndcfg_g313hu.txt
 
 # Wifi
 BOARD_WLAN_DEVICE                := bcmdhd
@@ -64,7 +64,7 @@ TARGET_SCREEN_HEIGHT := 800
 TARGET_SCREEN_WIDTH := 480
 
 # Hardware rendering
-BOARD_EGL_CFG := device/samsung/vivaltods5m/configs/egl.cfg
+BOARD_EGL_CFG := $(LOCAL_PATH)/configs/egl.cfg
 USE_OPENGL_RENDERER := true
 BOARD_USE_MHEAP_SCREENSHOT := true
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
@@ -105,8 +105,8 @@ BOARD_PROVIDES_LIBRIL := true
 BOARD_RIL_CLASS := ../../../device/samsung/vivaltods5m/ril/
 
 # Recovery
-TARGET_RECOVERY_INITRC := device/samsung/vivaltods5m/ramdisk/init.recovery.rc
-TARGET_RECOVERY_FSTAB := device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m
+TARGET_RECOVERY_INITRC := $(LOCAL_PATH)/ramdisk/init.recovery.rc
+TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/ramdisk/fstab.hawaii_ss_vivaltods5m
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/class/android_usb/android0/f_mass_storage/lun%d/file"
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_LARGE_FILESYSTEM := true
@@ -120,10 +120,10 @@ BOARD_SUPPRESS_EMMC_WIPE := true
 TARGET_RECOVERY_DENSITY := hdpi
 
 # CMHW
-BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/vivaltods5m/cmhw/
+BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ $(LOCAL_PATH)/cmhw/
 
 # GPS
-TARGET_SPECIFIC_HEADER_PATH := device/samsung/vivaltods5m/include
+TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
 # Compat
 TARGET_USES_LOGD := false
@@ -131,6 +131,6 @@ TARGET_USES_LOGD := false
 # jemalloc causes a lot of random crash on free()
 MALLOC_IMPL := dlmalloc
 
-BOARD_SEPOLICY_DIRS += device/samsung/vivaltods5m/sepolicy
+BOARD_SEPOLICY_DIRS += $(LOCAL_PATH)/sepolicy
 
 # plap

@@ -34,6 +34,9 @@ on init
 
     loglevel 3
 
+    # Disable selinux (temporary)
+    write /sys/fs/selinux/enforce 0
+
     # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
@@ -428,6 +431,9 @@ on boot
     # Define default initial receive window size in segments.
     setprop net.tcp.default_init_rwnd 60
 
+    # Enable init.d
+    setprop sys.initd 1
+
     class_start core
 
 on nonencrypted
@@ -435,8 +441,6 @@ on nonencrypted
     class_start late_start
 
 on charger
-    # Disable selinux (temporary)
-    write /sys/fs/selinux/enforce 0
 
     mount ext4 /dev/block/mmcblk0p17 /system ro wait noatime
     exec sfsck /dev/block/mmcblk0p19 ext4
@@ -516,7 +520,7 @@ service healthd /sbin/healthd
     critical
     seclabel u:r:healthd:s0
 
-service healthd-charger /sbin/healthd -n
+service healthd-charger /charger
     class charger
     critical
     seclabel u:r:healthd:s0
@@ -581,12 +585,14 @@ service debuggerd /system/bin/debuggerd
 service debuggerd64 /system/bin/debuggerd64
     class main
 
-#service ril-daemon /system/bin/rild
-#    class main
-#    socket rild stream 660 root radio
-#    socket rild-debug stream 660 radio system
-#    user root
-#    group radio cache inet misc audio sdcard_rw qcom_diag log
+# ril
+service ril-daemon /system/bin/rild
+    class main
+    socket rild stream 660 root radio
+    socket rild1 stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio log
 
 service surfaceflinger /system/bin/surfaceflinger
     class core
@@ -625,6 +631,12 @@ service bootanim /system/bin/bootanimation
     group graphics audio
     disabled
     oneshot
+
+# SuperSU daemon
+service daemonsu /system/xbin/daemonsu --daemon
+    class core
+    user root
+    group root
 
 service installd /system/bin/installd
     class main
@@ -679,3 +691,9 @@ service pre-recovery /system/bin/uncrypt
     class main
     disabled
     oneshot
+
+# Execute files in /etc/init.d during boot
+service sysinit /system/xbin/busybox run-parts /system/etc/init.d
+    class late_start
+    oneshot
+    user root

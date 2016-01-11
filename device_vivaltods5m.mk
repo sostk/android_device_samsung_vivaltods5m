@@ -3,7 +3,7 @@ $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
 # Copy kernel
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/samsung/vivaltods5m/kernel
+LOCAL_KERNEL := $(LOCAL_PATH)/kernel
 else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
@@ -16,24 +16,24 @@ PRODUCT_LOCALES += hdpi
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 
-DEVICE_PACKAGE_OVERLAYS += device/samsung/vivaltods5m/overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Init files
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/ramdisk/fstab.hawaii_ss_vivaltods5m:root/fstab.hawaii_ss_vivaltods5m \
-	device/samsung/vivaltods5m/ramdisk/init.hawaii_ss_vivaltods5m.rc:root/init.hawaii_ss_vivaltods5m.rc \
-	device/samsung/vivaltods5m/ramdisk/init.hawaii_ss_vivaltods5m_base.rc:root/init.hawaii_ss_vivaltods5m_base.rc \
-	device/samsung/vivaltods5m/ramdisk/init.log.rc:root/init.log.rc \
-	device/samsung/vivaltods5m/ramdisk/init.rc:root/init.rc \
-	device/samsung/vivaltods5m/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
-	device/samsung/vivaltods5m/ramdisk/init.wifi.rc:root/init.wifi.rc \
-	device/samsung/vivaltods5m/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
+	$(LOCAL_PATH)/ramdisk/fstab.hawaii_ss_vivaltods5m:root/fstab.hawaii_ss_vivaltods5m \
+	$(LOCAL_PATH)/ramdisk/init.hawaii_ss_vivaltods5m.rc:root/init.hawaii_ss_vivaltods5m.rc \
+	$(LOCAL_PATH)/ramdisk/init.hawaii_ss_vivaltods5m_base.rc:root/init.hawaii_ss_vivaltods5m_base.rc \
+	$(LOCAL_PATH)/ramdisk/init.log.rc:root/init.log.rc \
+	$(LOCAL_PATH)/ramdisk/init.rc:root/init.rc \
+	$(LOCAL_PATH)/ramdisk/init.usb_hawaii_ss.rc:root/init.usb_hawaii_ss.rc \
+	$(LOCAL_PATH)/ramdisk/init.wifi.rc:root/init.wifi.rc \
+	$(LOCAL_PATH)/ramdisk/ueventd.hawaii_ss_vivaltods5m.rc:root/ueventd.hawaii_ss_vivaltods5m.rc # no need to cut off since init is patched.
 
 # Codec config
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/media_profiles.xml:system/etc/media_profiles.xml \
-	device/samsung/vivaltods5m/configs/audio_policy.conf:system/etc/audio_policy.conf \
-	device/samsung/vivaltods5m/configs/media_codecs.xml:system/etc/media_codecs.xml \
+	$(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+	$(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
+	$(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
@@ -41,27 +41,31 @@ PRODUCT_COPY_FILES += \
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/keylayouts/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
-	device/samsung/vivaltods5m/keylayouts/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
-	device/samsung/vivaltods5m/keylayouts/bcmpmu_on.kl:system/usr/keylayout/bcmpmu_on.kl \
-	device/samsung/vivaltods5m/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
-	device/samsung/vivaltods5m/keylayouts/ist30xx_ts_input.kl:system/usr/keylayout/ist30xx_ts_input.kl
+	$(LOCAL_PATH)/keylayouts/bcm_headset.kl:system/usr/keylayout/bcm_headset.kl \
+	$(LOCAL_PATH)/keylayouts/bcm_keypad_v2.kl:system/usr/keylayout/bcm_keypad_v2.kl \
+	$(LOCAL_PATH)/keylayouts/bcmpmu_on.kl:system/usr/keylayout/bcmpmu_on.kl \
+	$(LOCAL_PATH)/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+	$(LOCAL_PATH)/keylayouts/ist30xx_ts_input.kl:system/usr/keylayout/ist30xx_ts_input.kl
 
 # Bluetooth config
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/bluetooth/bt_did.conf:system/etc/bluetooth/bt_did.conf \
-	device/samsung/vivaltods5m/configs/bluetooth/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
+	$(LOCAL_PATH)/configs/bluetooth/bt_did.conf:system/etc/bluetooth/bt_did.conf \
+	$(LOCAL_PATH)/configs/bluetooth/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
 
 # WiFi config
 PRODUCT_COPY_FILES += \
-	device/samsung/vivaltods5m/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
-	device/samsung/vivaltods5m/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
+	$(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
+	$(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
 # APN config and
 # Data workaround
 PRODUCT_COPY_FILES += \
 	device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml \
-	device/samsung/vivaltods5m/configs/enable_data:system/bin/enable_data
+	$(LOCAL_PATH)/configs/enable_data:system/bin/enable_data
+
+# init.d
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/configs/init.d/00banner:system/etc/init.d/00banner \
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -120,6 +124,10 @@ PRODUCT_PACKAGES += \
     libffmpeg_omx \
     media_codecs_ffmpeg.xml
 
+# Task Manager
+#PRODUCT_PACKAGES += \
+#    TaskManager
+
 PRODUCT_PROPERTY_OVERRIDES += \
     media.sf.omx-plugin=libffmpeg_omx.so \
     media.sf.extractor-plugin=libffmpeg_extractor.so
@@ -171,6 +179,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 # Dalvik heap config
 include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
+#include vendor/chainsdd/SuperSU.mk
 
 $(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
 

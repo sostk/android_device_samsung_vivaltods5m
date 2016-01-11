@@ -815,6 +815,21 @@ index 0000000..95354e7
 +
 +}
 +#endif
+diff --git a/include/media/stagefright/MediaCodecList.h b/include/media/stagefright/MediaCodecList.h
+index c2bbe4d..ac7b053 100644
+--- a/include/media/stagefright/MediaCodecList.h
++++ b/include/media/stagefright/MediaCodecList.h
+@@ -45,6 +45,10 @@ struct MediaCodecList : public BnMediaCodecList {
+     virtual size_t countCodecs() const;
+ 
+     virtual sp<MediaCodecInfo> getCodecInfo(size_t index) const {
++        if (index >= mCodecInfos.size()) {
++            ALOGE("b/24445127");
++            return NULL;
++        }
+         return mCodecInfos.itemAt(index);
+     }
+ 
 diff --git a/include/media/stagefright/MediaDefs.h b/include/media/stagefright/MediaDefs.h
 index 13695d5..bab6432 100644
 --- a/include/media/stagefright/MediaDefs.h
@@ -7450,34 +7465,9 @@ index 0000000..92139ef
 +
 +}
 diff --git a/media/libstagefright/MPEG4Writer.cpp b/media/libstagefright/MPEG4Writer.cpp
-index 9f20b1d..5e95e13 100644
+index 9f20b1d..91d9db5 100644
 --- a/media/libstagefright/MPEG4Writer.cpp
 +++ b/media/libstagefright/MPEG4Writer.cpp
-@@ -2314,7 +2314,7 @@ status_t MPEG4Writer::Track::threadEntry() {
-             ALOGE("timestampUs %" PRId64 " < lastTimestampUs %" PRId64 " for %s track",
-                 timestampUs, lastTimestampUs, trackName);
-             copy->release();
--            return UNKNOWN_ERROR;
-+            // return UNKNOWN_ERROR;
-         }
- 
-         // if the duration is different for this sample, see if it is close enough to the previous
-@@ -2412,13 +2412,13 @@ status_t MPEG4Writer::Track::threadEntry() {
-     }
- 
-     if (isTrackMalFormed()) {
--        err = ERROR_MALFORMED;
-+        // err = ERROR_MALFORMED;
-     }
- 
-     mOwner->trackProgressStatus(mTrackId, -1, err);
- 
-     // Last chunk
--    if (!hasMultipleTracks) {
-+    if (!hasMultipleTracks && mIsAudio) {
-         addOneStscTableEntry(1, mStszTableEntries->count());
-     } else if (!mChunkSamples.empty()) {
-         addOneStscTableEntry(++nChunks, mChunkSamples.size());
 @@ -2800,8 +2800,10 @@ void MPEG4Writer::Track::writeMp4aEsdsBox() {
  
      mOwner->writeInt16(0x03);  // XXX
@@ -8057,91 +8047,77 @@ index 597167f..9e0aaca 100644
          const BitmapParams &src, const BitmapParams &dst) {
      if (!((src.mCropLeft & 1) == 0
 diff --git a/media/libstagefright/colorconversion/SoftwareRenderer.cpp b/media/libstagefright/colorconversion/SoftwareRenderer.cpp
-index 04467b9..d49b51b 100644
+index 04467b9..7cd1bf6 100644
 --- a/media/libstagefright/colorconversion/SoftwareRenderer.cpp
 +++ b/media/libstagefright/colorconversion/SoftwareRenderer.cpp
-@@ -101,6 +101,8 @@ void SoftwareRenderer::resetFormatIfChanged(const sp<AMessage> &format) {
-     int halFormat;
-     size_t bufWidth, bufHeight;
+@@ -132,11 +132,20 @@ void SoftwareRenderer::resetFormatIfChanged(const sp<AMessage> &format) {
+     CHECK(mCropHeight > 0);
+     CHECK(mConverter == NULL || mConverter->isValid());
  
-+    ALOGW("PATCH:SoftwareRenderer:resetFormatIfChanged: mColorFormat = %i", mColorFormat);
-+
-     switch (mColorFormat) {
-         case OMX_COLOR_FormatYUV420Planar:
-         case OMX_TI_COLOR_FormatYUV420PackedSemiPlanar:
-@@ -181,7 +183,7 @@ void SoftwareRenderer::resetFormatIfChanged(const sp<AMessage> &format) {
- }
++#ifdef EXYNOS4_ENHANCEMENTS
++    CHECK_EQ(0,
++            native_window_set_usage(
++            mNativeWindow.get(),
++            GRALLOC_USAGE_SW_READ_NEVER | GRALLOC_USAGE_SW_WRITE_OFTEN
++            | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_EXTERNAL_DISP
++            | GRALLOC_USAGE_HW_FIMC1));
++#else
+     CHECK_EQ(0,
+             native_window_set_usage(
+             mNativeWindow.get(),
+             GRALLOC_USAGE_SW_READ_NEVER | GRALLOC_USAGE_SW_WRITE_OFTEN
+             | GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_EXTERNAL_DISP));
++#endif
  
- void SoftwareRenderer::render(
--        const void *data, size_t size, int64_t timestampNs,
-+        const void *data, size_t /* size */, int64_t timestampNs,
-         void* /*platformPrivate*/, const sp<AMessage>& format) {
-     resetFormatIfChanged(format);
- 
-@@ -202,6 +204,7 @@ void SoftwareRenderer::render(
-                 buf->handle, GRALLOC_USAGE_SW_WRITE_OFTEN, bounds, &dst));
- 
-     if (mConverter) {
-+        ALOGW("PATCH:SoftwareRenderer:render: mConverter () mColorFormat = %i ", mColorFormat);
-         mConverter->convert(
-                 data,
-                 mWidth, mHeight,
-@@ -210,9 +213,10 @@ void SoftwareRenderer::render(
-                 buf->stride, buf->height,
-                 0, 0, mCropWidth - 1, mCropHeight - 1);
-     } else if (mColorFormat == OMX_COLOR_FormatYUV420Planar) {
--        if ((size_t)mWidth * mHeight * 3 / 2 > size) {
--            goto skip_copying;
--        }
-+        // if ((size_t)mWidth * mHeight * 3 / 2 > size) {
-+        //     goto skip_copying;
-+        // }
-+        ALOGW("PATCH:SoftwareRenderer:render: mColorFormat = %i OMX_COLOR_FormatYUV420Planar", mColorFormat);
-         const uint8_t *src_y = (const uint8_t *)data;
-         const uint8_t *src_u = (const uint8_t *)data + mWidth * mHeight;
-         const uint8_t *src_v = src_u + (mWidth / 2 * mHeight / 2);
-@@ -232,19 +236,17 @@ void SoftwareRenderer::render(
-         }
- 
-         for (int y = 0; y < (mCropHeight + 1) / 2; ++y) {
--            memcpy(dst_u, src_u, (mCropWidth + 1) / 2);
--            memcpy(dst_v, src_v, (mCropWidth + 1) / 2);
-+            memcpy(dst_u, src_v, (mCropWidth + 1) / 2);
-+            memcpy(dst_v, src_u, (mCropWidth + 1) / 2);
- 
-             src_u += mWidth / 2;
-             src_v += mWidth / 2;
-             dst_u += dst_c_stride;
-             dst_v += dst_c_stride;
-         }
--    } else if (mColorFormat == OMX_TI_COLOR_FormatYUV420PackedSemiPlanar
--            || mColorFormat == OMX_COLOR_FormatYUV420SemiPlanar) {
--        if ((size_t)mWidth * mHeight * 3 / 2 > size) {
--            goto skip_copying;
--        }
-+    } else {
-+        ALOGW("PATCH:SoftwareRenderer:render: mColorFormat = %i OMX_TI_COLOR_FormatYUV420PackedSemiPlanar", mColorFormat);
-+        CHECK_EQ(mColorFormat, OMX_TI_COLOR_FormatYUV420PackedSemiPlanar);
- 
-         const uint8_t *src_y =
-             (const uint8_t *)data;
-@@ -253,7 +255,6 @@ void SoftwareRenderer::render(
-             (const uint8_t *)data + mWidth * (mHeight - mCropTop / 2);
+     CHECK_EQ(0,
+             native_window_set_scaling_mode(
+@@ -219,10 +228,19 @@ void SoftwareRenderer::render(
  
          uint8_t *dst_y = (uint8_t *)dst;
--
+         size_t dst_y_size = buf->stride * buf->height;
++
++#ifdef EXYNOS4_ENHANCEMENTS
++        size_t dst_c_stride = buf->stride / 2;
++        size_t dst_c_size = dst_c_stride * buf->height / 2;
++        size_t dst_c_size_aligned = ALIGN(buf->stride / 2, 16) * buf->height / 2;
++        uint8_t *dst_v = dst_y + dst_y_size;
++        uint8_t *dst_u = dst_v + dst_c_size_aligned;
++#else
+         size_t dst_c_stride = ALIGN(buf->stride / 2, 16);
+         size_t dst_c_size = dst_c_stride * buf->height / 2;
+         uint8_t *dst_v = dst_y + dst_y_size;
+         uint8_t *dst_u = dst_v + dst_c_size;
++#endif
+ 
+         for (int y = 0; y < mCropHeight; ++y) {
+             memcpy(dst_y, src_y, mCropWidth);
+@@ -252,13 +270,25 @@ void SoftwareRenderer::render(
+         const uint8_t *src_uv =
+             (const uint8_t *)data + mWidth * (mHeight - mCropTop / 2);
+ 
+-        uint8_t *dst_y = (uint8_t *)dst;
++#ifdef EXYNOS4_ENHANCEMENTS
++        void *pYUVBuf[3];
+ 
++        CHECK_EQ(0, mapper.unlock(buf->handle));
++        CHECK_EQ(0, mapper.lock(
++                buf->handle, GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_YUV_ADDR, bounds, pYUVBuf));
++
++        size_t dst_c_stride = buf->stride / 2;
++        uint8_t *dst_y = (uint8_t *)pYUVBuf[0];
++        uint8_t *dst_v = (uint8_t *)pYUVBuf[1];
++        uint8_t *dst_u = (uint8_t *)pYUVBuf[2];
++#else
          size_t dst_y_size = buf->stride * buf->height;
          size_t dst_c_stride = ALIGN(buf->stride / 2, 16);
          size_t dst_c_size = dst_c_stride * buf->height / 2;
-@@ -278,8 +279,6 @@ void SoftwareRenderer::render(
-             dst_u += dst_c_stride;
-             dst_v += dst_c_stride;
-         }
--    } else {
--        LOG_ALWAYS_FATAL("bad color format %#x", mColorFormat);
-     }
++        uint8_t *dst_y = (uint8_t *)dst;
+         uint8_t *dst_v = dst_y + dst_y_size;
+         uint8_t *dst_u = dst_v + dst_c_size;
++#endif
  
- skip_copying:
+         for (int y = 0; y < mCropHeight; ++y) {
+             memcpy(dst_y, src_y, mCropWidth);
 diff --git a/media/libstagefright/include/ExtendedExtractor.h b/media/libstagefright/include/ExtendedExtractor.h
 new file mode 100644
 index 0000000..590674d
