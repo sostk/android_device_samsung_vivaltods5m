@@ -89,31 +89,9 @@ PRODUCT_PACKAGES += \
 	SamsungServiceMode \
 	libinit_hawaii_ss
 
-# NFC packages
-PRODUCT_PACKAGES += \
-    libnfc-nci \
-    libnfc_nci_jni \
-    nfc.nci.hawaii \
-    NfcNci \
-    Tag \
-    com.android.nfc_extras
-
-# NFCEE access control
-NFCEE_ACCESS_PATH := device/samsung/vivaltods5m/nfc/nfcee_access.xml
-
-# NFC access control + feature files + configuration
-PRODUCT_COPY_FILES += \
-    $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml \
-    frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
-    frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
-    frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
-    $(LOCAL_PATH)/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
-    $(LOCAL_PATH)/nfc/libnfc-brcm-20795a10.conf:system/etc/libnfc-brcm-20795a10.conf \
-    $(LOCAL_PATH)/nfc/libnfc-sec.conf:system/etc/libnfc-sec.conf
-
 # KSM
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.ksm.default=1	
+	ro.ksm.default=0
 	
 # Wi-Fi
 PRODUCT_PACKAGES += \
