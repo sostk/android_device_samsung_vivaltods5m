@@ -318,7 +318,7 @@ on fs
     chmod 0664 /data/brcm/utils
 
 #Enable PMTUD tcp_mtu_probing
-    write /proc/sys/net/ipv4/tcp_mtu_probing 2
+    write /proc/sys/net/ipv4/tcp_mtu_probing 1
 
 # needed to avoid the 7-minute-halt issue in (DOS) passive mode ftp on vodafone networ
     write /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal 1
@@ -453,7 +453,7 @@ on property:dev.bootcomplete=1
     write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
 
 #Indicate boot complete to PM to complete PM initialization
-on property:dev.bootcomplete=1
+#on property:dev.bootcomplete=1
     write /sys/module/pwr_mgr/parameters/pm_late_init 1
     chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
