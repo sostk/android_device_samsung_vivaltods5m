@@ -60,7 +60,7 @@ index 5e3dfab..3e9f345 100644
  void Layer::updateTransformHint(const sp<const DisplayDevice>& hw) const {
      uint32_t orientation = 0;
 +// CAPRI_HWC has display problem in landscape mode when transform is used
-+#ifndef CAPRI_HWC
++#ifndef HAWAII_HWC
      if (!mFlinger->mDebugDisableTransformHint) {
          // The transform hint is used to improve performance, but we can
          // only have a single transform hint, it cannot
